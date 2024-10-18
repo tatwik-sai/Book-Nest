@@ -1,24 +1,30 @@
-from tkinter import *
-import re
-from tkinter import messagebox, font, ttk
+from tkinter import font, ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from matplotlib.ticker import MaxNLocator
-import datetime
-from database import DataBase
+from database import Library, UserAdminManager
 from utils import *
+from ui_utils import *
+import threading
+import datetime
 
 
 class UserAdmin(Tk):
+    """
+    The Initial Login page which ask you to choose your role.
+    Choices:
+        1)USER  - Borrow Books
+        2)ADMIN - Manage Library and view Records.
+    """
     ASSETS_PATH = "assets\\frame1\\"
     def __init__(self):
         super().__init__()
         # Requirements
-        self.image_1 = PhotoImage(file=self.relative_to_assets("image_1.png"))
-        self.image_2 = PhotoImage(file=self.relative_to_assets("image_2.png"))
-        self.button_image_1 = PhotoImage(file=self.relative_to_assets("button_1.png"))
-        self.button_image_2 = PhotoImage(file=self.relative_to_assets("button_2.png"))
+        self.image_1 = PhotoImage(file=self.get_path("image_1.png"))
+        self.image_2 = PhotoImage(file=self.get_path("image_2.png"))
+        self.button_image_1 = PhotoImage(file=self.get_path("button_1.png"))
+        self.button_image_2 = PhotoImage(file=self.get_path("button_2.png"))
 
 
         # Configuring Window
@@ -32,7 +38,7 @@ class UserAdmin(Tk):
         self.create_page()
         self.mainloop()
 
-    def relative_to_assets(self, path: str):
+    def get_path(self, path: str):
         return self.ASSETS_PATH + path
 
     def user_click(self):
@@ -62,6 +68,9 @@ class UserAdmin(Tk):
         admin_button.place(x=268, y=352, width=162, height=44)
 
 class SignIU(Tk):
+    """
+
+    """
     ASSETS_PATH = "assets\\frame2\\"
 
     def __init__(self):
@@ -82,19 +91,19 @@ class SignIU(Tk):
         self.name_wid2 = None
 
         # Requirements
-        self.image_email = PhotoImage(file=self.relative_to_assets("image_1.png"))
-        self.image_name = PhotoImage(file=self.relative_to_assets("image_2.png"))
-        self.image_password = PhotoImage(file=self.relative_to_assets("image_3.png"))
-        self.image_left_bg = PhotoImage(file=self.relative_to_assets("image_4.png"))
-        self.image_shapes = PhotoImage(file=self.relative_to_assets("image_5.png"))
-        self.image_circle = PhotoImage(file=self.relative_to_assets("image_6.png"))
+        self.image_email = PhotoImage(file=self.get_path("image_1.png"))
+        self.image_name = PhotoImage(file=self.get_path("image_2.png"))
+        self.image_password = PhotoImage(file=self.get_path("image_3.png"))
+        self.image_left_bg = PhotoImage(file=self.get_path("image_4.png"))
+        self.image_shapes = PhotoImage(file=self.get_path("image_5.png"))
+        self.image_circle = PhotoImage(file=self.get_path("image_6.png"))
 
-        self.entry_image = PhotoImage(file=self.relative_to_assets("entry.png"))
+        self.entry_image = PhotoImage(file=self.get_path("entry.png"))
 
-        self.button_signup_1 = PhotoImage(file=self.relative_to_assets("button_1.png"))
-        self.button_signin_1 = PhotoImage(file=self.relative_to_assets("button_2.png"))
-        self.button_signin_2 = PhotoImage(file=self.relative_to_assets("button_3.png"))
-        self.button_signup_2 = PhotoImage(file=self.relative_to_assets("button_4.png"))
+        self.button_signup_1 = PhotoImage(file=self.get_path("button_1.png"))
+        self.button_signin_1 = PhotoImage(file=self.get_path("button_2.png"))
+        self.button_signin_2 = PhotoImage(file=self.get_path("button_3.png"))
+        self.button_signup_2 = PhotoImage(file=self.get_path("button_4.png"))
 
 
         # Configuring Window
@@ -103,13 +112,14 @@ class SignIU(Tk):
         self.title("BookNest")
         self.iconbitmap('assets\\icon.ico')
         self.resizable(False, False)
+        self.focus_force()
 
         self.create_page()
         if App.USER == "ADMIN":
             self.sign_in(rm_left=True)
         self.mainloop()
 
-    def relative_to_assets(self, path: str):
+    def get_path(self, path: str):
         return self.ASSETS_PATH + path
 
     def sign_in(self, rm_left=False):
@@ -139,29 +149,30 @@ class SignIU(Tk):
             self.canvas.itemconfig(self.name_wid1, state='hidden')
             self.canvas.itemconfig(self.name_wid2, state='hidden')
             self.entry_name.place_forget()
+            self.entry_email.focus_set()
         else:
             email = self.entry_email.get()
             password = self.entry_password.get()
             if re.match(email_pattern, email):
                 if App.USER == "USER":
                     try:
-                        index = db.u_email.index(email)
-                        if db.users[index][3] == password:
-                            App.USER_ID = db.users[index][0]
+                        u_id = ua_data.is_user(email, password)
+                        if u_id:
+                            App.USER_ID = u_id
                             self.destroy()
                             App()
                         else:
-                            messagebox.showinfo("Wrong Password", "You password doesn't match.")
+                            show_notification(self, "Make sure your password is correct.",fg='red', x_pos=681)
                     except ValueError:
-                        messagebox.showinfo("Unregistered Email", "The email you used is not registered try signing up instead.")
+                        show_notification(self, "Unregistered email. Try to SignUp instead.", fg='red', x_pos=681)
                 else:
-                    if email == db.a_email and password == db.a_pass:
+                    if ua_data.is_admin(email, password):
                         self.destroy()
                         App()
                     else:
-                        messagebox.showinfo("Invalid Credentials", "The email or the password you entered is wrong.")
+                        show_notification(self, "The email or the password you entered is wrong.", fg='red', x_pos=681)
             else:
-                messagebox.showinfo("Invalid Email", "Make sure the email you entered is correct.")
+                show_notification(self, "Make sure the email you entered is correct.", fg='red', x_pos=681)
 
     def sign_up(self):
         if self.cur_page == "SIGNIN":
@@ -189,6 +200,7 @@ class SignIU(Tk):
             self.canvas.itemconfig(self.name_wid1, state='normal')
             self.canvas.itemconfig(self.name_wid2, state='normal')
             self.entry_name.place(x=552, y=288, width=232, height=42)
+            self.entry_name.focus_set()
         else:
             name = self.entry_name.get()
             email = self.entry_email.get()
@@ -196,20 +208,18 @@ class SignIU(Tk):
             if re.match(email_pattern, email):
                 if is_strong_pass(password):
                     if len(name) >= 4:
-                        # add user to database if not already in database else ask him to sign in
-                        pass
-                        if email not in db.u_email:
-                            App.USER_ID = db.add_user([name, email, password])
+                        if email not in ua_data.u_email:
+                            App.USER_ID = ua_data.add_user([name, email, password])
                             self.destroy()
                             App()
                         else:
-                            messagebox.showinfo("Login Instead", "The email you are using is already registered.")
+                            show_notification(self, "The email you are using is already registered.", fg='red', x_pos=681)
                     else:
-                        messagebox.showinfo("Invalid Name", "Name should at least be 3 characters long.")
+                        show_notification(self, "Name should at least be 3 characters long.", fg='red', x_pos=681)
                 else:
-                    messagebox.showinfo("Weak password", "Make sure your password has at least 12 characters.")
+                    show_notification(self, "Password must be 8+ chars with upper, lower, digit, and special-char", fg='red', x_pos=699)
             else:
-                messagebox.showinfo("Invalid Email", "Make sure the email you entered is correct.")
+                show_notification(self, "Make sure the email you entered is correct.", fg='red', x_pos=681)
 
     def create_page(self):
         # Creating Canvas
@@ -221,6 +231,7 @@ class SignIU(Tk):
 
         self.entry_name = Entry(bd=0, bg="#E7E7E7", font=("Roboto", 11), highlightthickness=0)
         self.entry_name.place(x=552, y=288, width=232, height=42)
+        self.entry_name.focus_set()
 
         self.canvas.create_image(528, 366, image=self.image_email)
         self.canvas.create_image(678, 366, image=self.entry_image)
@@ -234,7 +245,8 @@ class SignIU(Tk):
         self.entry_password = Entry(bd=0, bg="#E7E7E7", font=("Roboto", 11), highlightthickness=0)
         self.entry_password.place(x=552, y=401, width=232, height=40)
 
-        self.signup_btn = Button(image=self.button_signup_1, borderwidth=0, highlightthickness=0, command=self.sign_up, relief="flat", background="#262626", activebackground='#262626')
+        self.signup_btn = Button(image=self.button_signup_1, borderwidth=0, highlightthickness=0, command=self.sign_up,
+                                 relief="flat", background="#262626", activebackground='#262626')
         self.signup_btn.place(x=552, y=470, width=200, height=52)
 
         self.canvas.create_image(191, 290, image=self.image_left_bg)
@@ -242,22 +254,26 @@ class SignIU(Tk):
         self.canvas.create_image(20, 590, image=self.image_circle)
 
         self.right_heading = self.canvas.create_text(519, 182, anchor="nw", text="Create Account", fill="#38B593",
-                           font=("Montserrat Bold", 32 * -1))
-        self.right_msg = self.canvas.create_text(556, 231, anchor="nw", text="use your email for registration", fill="#9A9A9A",
-                           font=("Montserrat Regular", 12 * -1))
+                                                     font=("Montserrat Bold", 32 * -1))
+        self.right_msg = self.canvas.create_text(556, 231, anchor="nw", text="use your email for registration",
+                                                 fill="#9A9A9A",
+                                                 font=("Montserrat Regular", 12 * -1))
 
-        self.left_heading = self.canvas.create_text(110, 190, anchor="nw", text="New User?", fill="#FFFFFF", tags='left',
+        self.left_heading = self.canvas.create_text(110, 190, anchor="nw", text="New User?", fill="#FFFFFF",
+                                                    tags='left',
                                                     font=("Montserrat Bold", 32 * -1))
-        self.left_msg1 = self.canvas.create_text(70, 250, anchor="nw", text="Join us to explore any book you choose", fill="#FFFFFF", tags='left',
-                           font=("Montserrat Regular", 14 * -1))
-        self.left_msg2 = self.canvas.create_text(110, 270, anchor="nw", text="and dive into knowledge!", fill="#FFFFFF", tags='left',
-                           font=("Montserrat Regular", 14 * -1))
+        self.left_msg1 = self.canvas.create_text(70, 250, anchor="nw", text="Join us to explore any book you choose",
+                                                 fill="#FFFFFF", tags='left',
+                                                 font=("Montserrat Regular", 14 * -1))
+        self.left_msg2 = self.canvas.create_text(110, 270, anchor="nw", text="and dive into knowledge!", fill="#FFFFFF",
+                                                 tags='left',
+                                                 font=("Montserrat Regular", 14 * -1))
 
-        self.signin_btn = Button(image=self.button_signin_1, borderwidth=0, highlightthickness=0, command=self.sign_in, relief="flat", activebackground="#04A67F", background="#04A67F")
+        self.signin_btn = Button(image=self.button_signin_1, borderwidth=0, highlightthickness=0, command=self.sign_in,
+                                 relief="flat", activebackground="#04A67F", background="#04A67F")
         self.signin_btn.place(x=100, y=317, width=145, height=50)
 
 class Home:
-    # User rel pos instead of static pos
     ASSETS_PATH = "assets\\home\\"
     TOP_GAP = 130
     def __init__(self, parent):
@@ -268,7 +284,7 @@ class Home:
 
         Label(master=self.frame, text="Library", font=("Roboto", 25, 'bold'), background="#262626", foreground='white').place(x=10, y=15)
 
-        self.image_search = PhotoImage(file=self.relative_to_assets("image_1.png"))
+        self.image_search = PhotoImage(file=self.get_path("image_1.png"))
         self.search_canvas = Canvas(master=self.frame, bg="#262626", bd=0, highlightthickness=0)
         self.search_canvas.create_image(150, 20, image=self.image_search)
         self.entry_search = Entry(bd=0, bg="#E7E7E7", fg="#000716", highlightthickness=0, font=font.Font(family="Roboto", size=11))
@@ -277,8 +293,8 @@ class Home:
         self.search_canvas.place(x=self.parent.winfo_width() - 350, y=10, height=41, width=300)
         self.entry_search.bind("<KeyRelease>", self.update_books)
 
-        self.image_left = PhotoImage(file=self.relative_to_assets("left_edge.png"))
-        self.image_right = PhotoImage(file=self.relative_to_assets("right_edge.png"))
+        self.image_left = PhotoImage(file=self.get_path("left_edge.png"))
+        self.image_right = PhotoImage(file=self.get_path("right_edge.png"))
         self.head_canvas = Canvas(master=self.frame, bg="#262626", bd=0, highlightthickness=0)
         self.head_canvas.create_image(12, 22, image=self.image_left)
         self.right_id = self.head_canvas.create_image(0, 0, image=self.image_right)
@@ -290,25 +306,25 @@ class Home:
         Label(master=self.frame, text="Book", font=("Roboto", 20, 'bold'), background="#F37577",
               foreground='white').place(x=120, y=75)
         Label(master=self.frame, text="Author", font=("Roboto", 20, 'bold'), background="#F37577",
-              foreground='white').place(x=550 if App.USER != "ADMIN" else 500, y=75)
+              foreground='white').place(relx=0.6 if App.USER != "ADMIN" else 0.5, y=75)
         if App.USER == "ADMIN":
             Label(master=self.frame, text="Copies", font=("Roboto", 20, 'bold'), background="#F37577",
-                  foreground='white').place(x=700, y=75)
+                  foreground='white').place(relx=0.74, y=75)
 
-        self.image_i_left = PhotoImage(file=self.relative_to_assets("item_left.png"))
-        self.image_i_right = PhotoImage(file=self.relative_to_assets("item_right.png"))
-        self.image_button = PhotoImage(file=self.relative_to_assets("button_.png"))
-        self.image_maintenance = PhotoImage(file=self.relative_to_assets("maintenance.png"))
-        self.image_remove = PhotoImage(file=self.relative_to_assets("remove.png"))
+        self.image_i_left = PhotoImage(file=self.get_path("item_left.png"))
+        self.image_i_right = PhotoImage(file=self.get_path("item_right.png"))
+        self.image_button = PhotoImage(file=self.get_path("button_.png"))
+        self.image_maintenance = PhotoImage(file=self.get_path("maintenance.png"))
+        self.image_remove = PhotoImage(file=self.get_path("remove.png"))
 
 
         self.scroll_frame = Frame(self.frame, height = self.parent.winfo_height() - self.TOP_GAP, width=self.parent.winfo_width()-50, bg="#262626")
         self.scroll_frame.pack(fill='both', expand=True, pady=(self.TOP_GAP,0))
-        self.lib_books = db.lib_books()
+        self.lib_books = library.lib_books()
         self.stripped_books = [[book[1].replace(" ", "").lower(), book[2].replace(" ", "").lower()] for book in self.lib_books]
         self.list_frame = ListFrame(self.scroll_frame, self.lib_books, 60, self.create_item)
 
-    def relative_to_assets(self, path: str):
+    def get_path(self, path: str):
         return self.ASSETS_PATH + path
 
     def add_frame(self):
@@ -326,21 +342,30 @@ class Home:
         self.frame.pack_forget()
 
     def remove_book(self, book_id):
-        index = db.l_ids.index(book_id)
+        index = library.l_ids.index(book_id)
         copies = self.copies_var[index].get()
         if copies != 0:
             self.copies_var[index].set(copies-1)
-            db.library[index][7] = int(db.library[index][7]) - 1
-            db.update_library()
+            library.books[index][7] = int(library.books[index][7]) - 1
+            library.lib_dict[book_id]['Copies'] = library.books[index][7]
+            library.update_library()
+            show_notification(self.frame, "Removing the book.", fg='white')
+        else:
+            show_notification(self.frame, "No copies of the book available.", fg='red')
 
     def to_maintenance(self, book_id):
-        index = db.l_ids.index(book_id)
+        index = library.l_ids.index(book_id)
         copies = self.copies_var[index].get()
         if copies != 0:
             self.copies_var[index].set(copies - 1)
-            db.library[index][7] = int(db.library[index][7]) - 1
-            db.library[index][9] = int(db.library[index][9]) + 1
-            db.update_library()
+            library.books[index][7] = int(library.books[index][7]) - 1
+            library.books[index][9] = int(library.books[index][9]) + 1
+            library.lib_dict[book_id]['Copies'] = library.books[index][7]
+            library.lib_dict[book_id]['Maintenance'] = library.books[index][9]
+            library.update_library()
+            show_notification(self.frame, "Added the book to maintenance.", fg='white')
+        else:
+            show_notification(self.frame, "No copies of the book available.", fg='red')
 
     def create_item(self, data, parent):
         frame = Frame(parent, bg='#333333', width=self.parent.winfo_width() - 80, height=50)
@@ -354,14 +379,14 @@ class Home:
 
         Label(frame, text=data[0], font=font.Font(family="Roboto", size=13), background='#333333', foreground='white').place(x=5, y=10)
         Label(frame, text=data[1], font=font.Font(family="Roboto", size=13), background='#333333', foreground='white').place(x=110, y=10)
-        Label(frame, text=data[2], font=font.Font(family="Roboto", size=13), background='#333333', foreground='white').place(x=540 if App.USER != "ADMIN" else 490, y=10)
+        Label(frame, text=data[2], font=font.Font(family="Roboto", size=13), background='#333333', foreground='white').place(relx=0.6 if App.USER != "ADMIN" else 0.5, y=10)
         if App.USER == "USER":
             Button(master= frame, image=self.image_button,background='#333333', activebackground='#333333', borderwidth=0, highlightthickness=0, command=lambda identity=data[0]: self.borrow_book(identity), relief="flat").place(anchor='ne', relx=0.98, y=10)
         elif App.USER == "ADMIN":
             temp = IntVar(value=data[3])
             self.copies_var.append(temp)
             Label(frame, textvariable=temp, font=font.Font(family="Roboto", size=13), background='#333333',
-                  foreground='white', ).place(x=730, y=10)
+                  foreground='white', ).place(relx=0.75, y=10)
             Button(master=frame, image=self.image_maintenance, background='#333333', activebackground='#333333',
                    borderwidth=0, highlightthickness=0, command=lambda s=data[0]: self.to_maintenance(s),
                    relief="flat").place(anchor='center', relx=0.92, y=27)
@@ -371,23 +396,26 @@ class Home:
 
         return frame
 
-    def borrow_book(self, identity):
-        if already_borrowed(App.USER_ID, identity, db.register):
-            messagebox.showinfo("Already Borrowed", "You haven't returned the copy of this book that you borrowed,")
-        elif int(db.lib_dict[identity]['Copies']) - int(db.lib_dict[identity]['Borrowed']) - int(db.lib_dict[identity]['Maintenance']) == 0:
-            messagebox.showinfo("Not Available", "Currently the book is unavailable.")
+    def borrow_book(self, book_id):
+        if library.already_borrowed(App.USER_ID, book_id):
+            show_notification(self.frame, "You still haven't returned the book you borrowed.", fg='white')
+        elif int(library.lib_dict[book_id]['Copies']) == 0:
+            show_notification(self.frame, "Currently the book is unavailable.", fg='white')
         else:
-            prev_bid = db.register[-1][0]
+            prev_bid = library.register[-1][0]
             bid = '#' + '0'*(5-len(str(int(prev_bid[1:]) + 1))) + str(int(prev_bid[1:]) + 1)
             i_date = datetime.date.today().strftime('%d-%m-%Y')
-            db.register.append([bid, identity, App.USER_ID, i_date, '-'])
-            db.update_register()
+            library.register.append([bid, book_id, App.USER_ID, i_date, '-'])
+            library.update_register()
 
-            index = db.l_ids.index(identity)
-            db.library[index][8] = int(db.library[index][8]) + 1
-            db.update_library()
+            index = library.l_ids.index(book_id)
+            library.books[index][7]  = int(library.books[index][7]) - 1
+            library.books[index][8] = int(library.books[index][8]) + 1
+            library.lib_dict[book_id]['Copies'] = library.books[index][7]
+            library.lib_dict[book_id]['Borrowed'] = library.books[index][8]
+            library.update_library()
 
-            messagebox.showinfo("Successfully Borrowed", "You can have the book now.")
+            show_notification(self.frame, "You have borrowed the book successfully.", fg='white')
 
     def update_books(self, _):
         key = self.entry_search.get().replace(" ", "").lower()
@@ -404,7 +432,7 @@ class AddBook:
         self.parent = parent
         self.frame = Frame(parent, height=650, width=950, bg="#262626")
 
-        self.image_bg = PhotoImage(file=self.relative_to_assets("frame_bg.png"))
+        self.image_bg = PhotoImage(file=self.get_path("frame_bg.png"))
 
         self.canvas = Canvas(self.frame, height=610, width=730, bg="#262626", borderwidth=0, bd=0, highlightthickness=0)
         self.canvas.create_image(2, 8, anchor='nw', image=self.image_bg)
@@ -425,7 +453,7 @@ class AddBook:
         self.canvas.create_window((538, 251), window=self.entry_publisher, anchor='center', height=37, width=230)
         self.canvas.create_window((538, 356), window=self.entry_lang, anchor='center', height=37, width=230)
 
-        self.image_button = PhotoImage(file=self.relative_to_assets("button.png"))
+        self.image_button = PhotoImage(file=self.get_path("button.png"))
         self.button_add = Button(image=self.image_button, background="#333333", activebackground="#333333", borderwidth=0, command=self.add_book)
         self.canvas.create_window((340, 520), window=self.button_add, anchor='center', height=60, width=230)
 
@@ -435,9 +463,9 @@ class AddBook:
         self.comb_box = ttk.Combobox(self.frame, textvariable=self.copies, values=[str(i) for i in range(1, 101)], background="#333333", state='readonly', exportselection=False)
         self.canvas.create_window((360, 470), window=self.comb_box, anchor='center', width=35)
 
-        self.canvas.place(relx=0.5, rely=0.5, anchor='center')
+        self.canvas.place(relx=0.5, rely=0.52, anchor='center')
 
-    def relative_to_assets(self, path: str):
+    def get_path(self, path: str):
         return self.ASSETS_PATH + path
 
     def add_frame(self):
@@ -456,14 +484,28 @@ class AddBook:
         publisher = self.entry_publisher.get()
         genre = self.entry_genre.get()
         language = self.entry_lang.get()
-        l_id = db.library[-1][1]
+        l_id = library.books[-1][1]
         b_id = '#' + str(int(l_id[1:]) + 1)
         copies = self.comb_box.get()
-        if all([len(title), len(author), len(genre), len(language)]):
-            db.library.append([isbn, b_id, title, author, publisher, genre, language, copies, 0, 0])
-            db.update_library()
+        if all([len(title), len(author), len(genre), len(language), len(isbn), len(publisher)]):
+            library.books.append([isbn, b_id, title, author, publisher, genre, language, copies, 0, 0])
+            library.lib_dict[b_id] = {"ISBN": isbn, "Title": title, "Author": author, "Publisher": publisher, "Genre": genre,
+                         "Language": language, "Copies": copies, "Borrowed": 0, "Maintenance": 0}
+
+            library.update_library()
+            show_notification(self.frame, "Added the book to Library.", fg='white')
+            self.entry_isbn.config(validate='none')
+            self.entry_isbn.delete(0, 'end')
+            self.entry_isbn.config(validate='key')
+            self.entry_title.delete(0, 'end')
+            self.entry_author.delete(0, 'end')
+            self.entry_publisher.delete(0, 'end')
+            self.entry_genre.delete(0, 'end')
+            self.entry_lang.delete(0, 'end')
+            self.comb_box.set('1')
+
         else:
-            messagebox.showinfo("Incomplete Values", "Make sure you entered all the values.")
+            show_notification(self.frame, "Make sure to fill all the fields.", fg='red')
 
 class Statistics:
     ASSETS_PATH = "assets\\stat\\"
@@ -473,10 +515,10 @@ class Statistics:
         self.frame.rowconfigure((0, 1), weight=1, uniform='b')
         self.frame.columnconfigure((0, 1), weight=1, uniform='a')
 
-        self.image_lt = PhotoImage(file=self.relative_to_assets('lt.png'))
-        self.image_lb = PhotoImage(file=self.relative_to_assets('lb.png'))
-        self.image_rt = PhotoImage(file=self.relative_to_assets('rt.png'))
-        self.image_rb = PhotoImage(file=self.relative_to_assets('rb.png'))
+        self.image_lt = PhotoImage(file=self.get_path('lt.png'))
+        self.image_lb = PhotoImage(file=self.get_path('lb.png'))
+        self.image_rt = PhotoImage(file=self.get_path('rt.png'))
+        self.image_rb = PhotoImage(file=self.get_path('rb.png'))
 
         self.top_frame = Frame(self.frame, bg='#333333')
         self.bottom_left_frame = Frame(self.frame, bg="#333333")
@@ -505,16 +547,16 @@ class Statistics:
 
         today = datetime.date.today()
         dates = [(today - datetime.timedelta(days=x)) for x in range(10)]
-        books_borrowed = line_chart_values(db.register, dates)
+        books_borrowed = line_chart_values(library.register, dates)
 
         categories = ['Fiction', 'NonFiction', 'Mystery', 'Education', 'Fantasy']
-        values = bar_values(db.library, categories)
+        values = bar_values(library.books, categories)
 
         self.add_line_chart(books_borrowed, dates)
         self.add_bar_graph(categories, values)
-        self.add_pie_chart(["Available", "Borrowed", "Maintenance"], pie_values(db.library))
+        self.add_pie_chart(["Available", "Borrowed", "Maintenance"], pie_values(library.books))
 
-    def relative_to_assets(self, path: str):
+    def get_path(self, path: str):
         return self.ASSETS_PATH + path
 
     def add_line_chart(self, books_borrowed, dates):
@@ -626,14 +668,14 @@ class Register:
         self.parent = parent
         self.frame = Frame(parent, height=1000, width=600, bg="#262626")
 
-        self.image_notify = PhotoImage(file=self.relative_to_assets("notify_btn.png"))
+        self.image_notify = PhotoImage(file=self.get_path("notify_btn.png"))
 
         Label(self.frame, text="Borrowing History", font=("Roboto", 20, 'bold'), background='#262626', fg='white').place( x=10, y=8)
         Button(self.frame, image=self.image_notify, background='#262626', activebackground="#262626", borderwidth=0, command=self.send_notifications).place(anchor='ne', y=4, relx=1)
 
 
-        self.image_left = PhotoImage(file=self.relative_to_assets("left_edge.png"))
-        self.image_right = PhotoImage(file=self.relative_to_assets("right_edge.png"))
+        self.image_left = PhotoImage(file=self.get_path("left_edge.png"))
+        self.image_right = PhotoImage(file=self.get_path("right_edge.png"))
 
         self.head_canvas = Canvas(master=self.frame, bg="#262626", bd=0, highlightthickness=0)
         self.head_canvas.create_image(12, 22, image=self.image_left)
@@ -652,15 +694,15 @@ class Register:
               foreground='white').place(anchor='ne', relx=0.98, y=55)
 
 
-        self.image_i_left = PhotoImage(file=self.relative_to_assets("item_left.png"))
-        self.image_i_right = PhotoImage(file=self.relative_to_assets("item_right.png"))
-        self.image_done = PhotoImage(file=self.relative_to_assets("done.png"))
-        self.image_undone = PhotoImage(file=self.relative_to_assets("undone.png"))
+        self.image_i_left = PhotoImage(file=self.get_path("item_left.png"))
+        self.image_i_right = PhotoImage(file=self.get_path("item_right.png"))
+        self.image_done = PhotoImage(file=self.get_path("done.png"))
+        self.image_return = PhotoImage(file=self.get_path("return.png"))
 
         self.scroll_frame = Frame(self.frame, height=self.parent.winfo_height() - self.TOP_GAP,
                                   width=self.parent.winfo_width() - 50, bg="#262626")
         self.scroll_frame.pack(expand=True, fill="both", pady=(self.TOP_GAP, 0))
-        self.list_frame = ListFrame(self.scroll_frame, db.reg_info(), 60, self.create_item)
+        self.list_frame = ListFrame(self.scroll_frame, library.reg_info(), 60, self.create_item)
 
     def add_frame(self):
         self.frame.pack(expand=True, fill="both")
@@ -675,7 +717,7 @@ class Register:
         self.head_canvas.coords(self.right_id, self.parent.winfo_width() - 73, 22)
         self.head_canvas.place(x=5, y=50, width=self.parent.winfo_width() - 60, height=50)
 
-    def relative_to_assets(self, path: str):
+    def get_path(self, path: str):
         return self.ASSETS_PATH + path
 
     def create_item(self, data, parent):
@@ -692,31 +734,61 @@ class Register:
         Label(frame, text=data[1], font=font.Font(family="Roboto", size=13), background='#333333', foreground='white').place(x=93, y=10)
         Label(frame, text=data[2], font=font.Font(family="Roboto", size=13), background='#333333', foreground='white').place(relx=0.5, y=10)
         Label(frame, text=data[3], font=font.Font(family="Roboto", size=13), background='#333333', foreground='white').place(relx=0.68, y=10)
-        Label(frame, image=self.image_done if data[4] != '-' else self.image_undone, background='#333333').place(anchor='ne', relx=0.97, y=14)
-
+        if data[4] != '-':
+            Label(frame, image=self.image_done, background='#333333').place(anchor='ne', relx=0.97, y=14)
+        else:
+            Button(frame, image=self.image_return, background='#333333', activebackground='#333333', borderwidth=0,
+                   command=lambda: self.return_book(data[5])).place(anchor='ne', relx=0.99, y=6)
         return frame
 
+    def return_book(self, borrow_id):
+        show_notification(self.frame, "Updating the return of book.", fg='white')
+        bor_index = [row[0] for row in library.register].index(borrow_id)
+        library.register[bor_index][4] = datetime.date.today().strftime('%d-%m-%Y')
+        library.update_register()
+
+        b_id = library.register[bor_index][1]
+        book_index = library.l_ids.index(b_id)
+        library.books[book_index][8] = int(library.books[book_index][8]) - 1
+        library.books[book_index][7] = int(library.books[book_index][7]) + 1
+        library.lib_dict[b_id]['Borrowed'] = library.books[book_index][8]
+        library.lib_dict[b_id]['Copies'] = library.books[book_index][7]
+        library.update_library()
+        self.list_frame.update_items(library.reg_info())
+
     def send_notifications(self):
+        show_notification(self.frame, "Emailing users who haven't returned books.")
         subject = "Friendly Reminder to Return Borrowed Books"
         unreturned_users = {}
-        for row in db.register:
+        for row in library.register:
             if row[4] == '-':
-                email = db.users_dict[row[2]]['Email']
-                name = db.users_dict[row[2]]['Name']
-                books = [db.lib_dict[row[1]]['Title']]
+                email = ua_data.users_dict[row[2]]['Email']
+                name = ua_data.users_dict[row[2]]['Name']
+                books = [library.lib_dict[row[1]]['Title']]
+                i_date = row[3]
                 try:
                     unreturned_users[email]['books']  += books
+                    unreturned_users[email]['i_dates'] += [i_date]
                 except KeyError:
-                    unreturned_users[email] = {'name': name, 'books': books}
+                    unreturned_users[email] = {'name': name, 'books': books, 'i_dates': [i_date]}
         for key, value in unreturned_users.items():
+            due_info = library.due_by(value['i_dates'])
+
+            msg_info = ""
+            for index, (book, due) in enumerate(zip(value['books'], due_info)):
+                if due:
+                    msg_info += f"{index+1}) {book} -> You have exceeded the due date and have to pay a fine of ₹{due[1]*library.FINE}\n\t\t"
+                else:
+                    msg_info += f"{index+1}) {book} -> {due[2]} is the last date to return the book({due[1]} more days!)\n\t\t"
+
             body = f"""Dear {value['name']},
 
 \tI hope this message finds you well. I wanted to kindly remind you about the book(s) you borrowed from us. 
 \tIf you have finished reading them, we would appreciate it if you could return them at your earliest convenience.
 
 \tPlease check the list of books you currently have:
-\t\t{"".join([f"{index+1}) {book}\n\t\t" for index, book in enumerate(value['books'])])}
-\tIf you need more time with the book(s), feel free to let us know, and we can discuss an extension.
+\t\t{msg_info[:-2]}
+\tIf you have any issues feel free to contact us at support@booknest.com
 
 \tThank you for your attention to this matter. We look forward to receiving the books back soon!
 
@@ -733,11 +805,11 @@ class History:
         self.parent = parent
         self.frame = Frame(parent, height=1000, width=600, bg="#262626")
         Label(self.frame, text="Borrowing History", font=("Roboto", 20, 'bold'), background='#262626',
-              fg='white').place(anchor='center', relx=0.5, y=25)
-        self.borrow_history = db.borrow_hist(App.USER_ID)
+              fg='white').place(x=5, y=8)
+        self.borrow_history = library.borrow_hist(App.USER_ID)
 
-        self.image_left = PhotoImage(file=self.relative_to_assets("left_edge.png"))
-        self.image_right = PhotoImage(file=self.relative_to_assets("right_edge.png"))
+        self.image_left = PhotoImage(file=self.get_path("left_edge.png"))
+        self.image_right = PhotoImage(file=self.get_path("right_edge.png"))
 
         self.head_canvas = Canvas(master=self.frame, bg="#262626", bd=0, highlightthickness=0)
         self.head_canvas.create_image(12, 22, image=self.image_left)
@@ -754,10 +826,10 @@ class History:
         Label(master=self.frame, text="Status", font=("Roboto", 20, 'bold'), background="#F37577",
               foreground='white').place(anchor='ne', relx=0.96, y=55)
 
-        self.image_i_left = PhotoImage(file=self.relative_to_assets("item_left.png"))
-        self.image_i_right = PhotoImage(file=self.relative_to_assets("item_right.png"))
-        self.image_borrow = PhotoImage(file=self.relative_to_assets("borrow.png"))
-        self.image_return = PhotoImage(file=self.relative_to_assets("return.png"))
+        self.image_i_left = PhotoImage(file=self.get_path("item_left.png"))
+        self.image_i_right = PhotoImage(file=self.get_path("item_right.png"))
+        self.image_borrow = PhotoImage(file=self.get_path("borrow.png"))
+        self.image_undone = PhotoImage(file=self.get_path("undone.png"))
 
         self.scroll_frame = Frame(self.frame, height=self.parent.winfo_height() - self.TOP_GAP,
                                   width=self.parent.winfo_width() - 50, bg="#262626")
@@ -765,7 +837,7 @@ class History:
         self.list_frame = ListFrame(self.scroll_frame, self.borrow_history, 60, self.create_item)
 
     def add_frame(self):
-        self.list_frame.update_items(db.borrow_hist(App.USER_ID))
+        self.list_frame.update_items(library.borrow_hist(App.USER_ID))
         self.list_frame.clean_add()
         self.frame.pack(expand=True, fill="both")
 
@@ -778,7 +850,7 @@ class History:
         self.head_canvas.coords(self.right_id, self.parent.winfo_width() - 73, 22)
         self.head_canvas.place(x=5, y=50, width=self.parent.winfo_width() - 60, height=50)
 
-    def relative_to_assets(self, path: str):
+    def get_path(self, path: str):
         return self.ASSETS_PATH + path
 
     def create_item(self, data, parent):
@@ -795,47 +867,140 @@ class History:
         Label(frame, text=data[1], font=font.Font(family="Roboto", size=13), background='#333333', foreground='white').place(x=93, y=10)
         Label(frame, text=data[2], font=font.Font(family="Roboto", size=13), background='#333333', foreground='white').place(relx=0.68, y=10)
 
-        Button(frame, image=self.image_borrow if data[3] != '-' else self.image_return, background='#333333',activebackground='#333333', borderwidth=0,
-               command=lambda : self.borrow_again(data[0]) if data[3] != '-' else self.return_book(data[4])).place(anchor='ne', relx=0.99, y=6)
+        if data[3] != '-':
+            Button(frame, image=self.image_borrow, background='#333333',activebackground='#333333', borderwidth=0,
+               command=lambda : self.borrow_again(data[0])).place(anchor='ne', relx=0.99, y=6)
+        else:
+            Label(frame, image=self.image_undone, background='#333333').place(
+                anchor='ne', relx=0.97, y=14)
 
         return frame
 
-    def return_book(self, borrow_id):
-        bor_index = [row[0] for row in db.register].index(borrow_id)
-        db.register[bor_index][4] = datetime.date.today().strftime('%d-%m-%Y')
-        db.update_register()
-
-        book_index = db.l_ids.index(db.register[bor_index][1])
-        db.library[book_index][8] = int(db.library[book_index][8]) - 1
-        db.update_library()
-        self.list_frame.update_items(db.borrow_hist(App.USER_ID))
-
     def borrow_again(self, b_id):
-        if already_borrowed(App.USER_ID, b_id, db.register):
-            messagebox.showinfo("Already Borrowed", "You haven't returned the copy of this book that you borrowed,")
-        elif int(db.lib_dict[b_id]['Copies']) - int(db.lib_dict[b_id]['Borrowed']) - int(
-                db.lib_dict[b_id]['Maintenance']) == 0:
-            messagebox.showinfo("Not Available", "Currently the book is unavailable.")
+        if library.already_borrowed(App.USER_ID, b_id):
+            show_notification(self.frame, "You haven't returned the previous copy you borrowed.", fg='red')
+        elif int(library.lib_dict[b_id]['Copies']) == 0:
+            show_notification(self.frame, "Oops! The book is unavailable.", fg='red')
         else:
-            prev_bid = db.register[-1][0]
+            prev_bid = library.register[-1][0]
             bid = '#' + '0' * (5 - len(str(int(prev_bid[1:]) + 1))) + str(int(prev_bid[1:]) + 1)
             i_date = datetime.date.today().strftime('%d-%m-%Y')
-            db.register.append([bid, b_id, App.USER_ID, i_date, '-'])
-            db.update_register()
+            library.register.append([bid, b_id, App.USER_ID, i_date, '-'])
+            library.update_register()
 
-            index = db.l_ids.index(b_id)
-            db.library[index][8] = int(db.library[index][8]) + 1
-            db.update_library()
-            self.list_frame.update_items(db.borrow_hist(App.USER_ID))
-            messagebox.showinfo("Successfully Borrowed", "You can have the book now.")
+            index = library.l_ids.index(b_id)
+            library.books[index][8] = int(library.books[index][8]) + 1
+            library.books[index][7] = int(library.books[index][7]) - 1
+            library.lib_dict[b_id]['Borrowed']  = library.books[index][8]
+            library.lib_dict[b_id]['Copies'] = library.books[index][7]
+            library.update_library()
+            self.list_frame.update_items(library.borrow_hist(App.USER_ID))
+            show_notification(self.frame, "You have borrowed the book successfully.", fg='white')
 
-class Love:
+class Bot:
+    ASSETS_PATH = "assets\\bot\\"
     def __init__(self, parent):
         self.parent = parent
         self.frame = Frame(parent, height=1000, width=600, bg="#262626")
 
+        self.image_right = PhotoImage(file=self.get_path('right.png'))
+        self.image_left = PhotoImage(file=self.get_path('left.png'))
+        self.image_button = PhotoImage(file=self.get_path('button.png'))
+
+        self.image_lt = PhotoImage(file=self.get_path('tl.png'))
+        self.image_lb = PhotoImage(file=self.get_path('bl.png'))
+        self.image_rt = PhotoImage(file=self.get_path('tr.png'))
+        self.image_rb = PhotoImage(file=self.get_path('br.png'))
+
+        self.search_frame = Frame(self.frame, bg="#262626", width=850, height=55)
+        Label(self.search_frame, image=self.image_left, bg="#262626", borderwidth=0).place(x=0, y=0)
+        self.entry = Entry(self.search_frame, bd=0, highlightthickness=0, bg="#393939", font=("Roboto", 12), fg='white', insertbackground="white")
+        self.entry.bind('<Return>', lambda _: threading.Thread(target=self.on_click, args=(_, )).start())
+        self.entry.place(height=50, width=775, x=20, y=0)
+        Label(self.search_frame, image=self.image_right, bg="#262626", borderwidth=0).place(anchor='ne', relx=1, y=0)
+        Button(self.search_frame, image=self.image_button, bg="#393939", borderwidth=0, activebackground="#393939", command=lambda: threading.Thread(target=self.on_click, args=("", )).start()).place(anchor='ne', relx=0.985, y=4, height=46, width=45)
+        self.search_frame.pack(side='bottom', pady=(0, 5))
+
+        self.chat_frame = Frame(self.frame, bg='#262626', width=850)
+        self.chat_frame.pack(side='bottom', fill='y', expand=True, pady=(10, 3))
+        self.chat_frame.pack_propagate(False)
+
+        self.canvas = Canvas(self.chat_frame, bg="#262626", borderwidth=0, highlightthickness=0)
+        self.scroll_frame = Frame(self.canvas, bg='#262626')
+        self.canvas.create_window((0, 0), window=self.scroll_frame, anchor="nw", width=850)
+        self.canvas.pack(side="left", fill="both", expand=True)
+        self.canvas.bind_all("<MouseWheel>", self.on_mousewheel)
+        self.scroll_frame.bind("<Configure>", self.update_scroll_region )
+
+        ai_data = f"Library Columns: {[library.l_header[:7] + ['is_book_available']]}, Data: {[row[:7] + [True if row[7] else False] for row in library.books]}"
+        data = prompt + ai_data
+        threading.Thread(target=get_gemini_response, args=(data, )).start()
+        self.chat_widget(["Welcome to the Library Assistant!\nI'm here to help you with anything related to the library. You can ask me about available books, know which suits you, or get recommendations.\nHow can I assist you today?", 'response'], self.scroll_frame)
+
+    def update_scroll_region(self, event=None):
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+
+        content_height = self.canvas.bbox("all")[3]
+        canvas_height = self.canvas.winfo_height()
+
+        if content_height <= canvas_height:
+            self.canvas.unbind_all("<MouseWheel>")
+        else:
+            self.canvas.bind_all("<MouseWheel>", self.on_mousewheel)
+
+    def on_mousewheel(self, event):
+        self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+
+    def on_click(self, _):
+        query = self.entry.get()
+        if query == "":
+            show_notification(self.frame, "Please enter your query!")
+        else:
+            self.entry.delete(0, 'end')
+            self.chat_widget([query, 'query'], self.scroll_frame)
+
+            resp = get_gemini_response(query)
+            self.chat_widget([resp, 'response'], self.scroll_frame)
+
+    def chat_widget(self, data, parent):
+        master_frame = Frame(parent, bg="#262626")
+        temp = Frame(master_frame, bg='#262626')
+
+        frame = Frame(master_frame, bg="#333333")
+
+        lt = Frame(frame, bg="#262626")
+        lt.place(x=0, y=0, height=12, width=13)
+        Label(lt, image=self.image_lt, bg="#262626").pack()
+
+        rt = Frame(frame, bg="#262626")
+        rt.place(anchor="ne", relx=1, y=0, height=12, width=13)
+        Label(rt, image=self.image_rt, bg="#262626").pack(side='left')
+
+        lb = Frame(frame, bg="#262626")
+        lb.place(anchor="sw", relx=0, rely=1, height=12, width=13)
+        Label(lb, image=self.image_lb, bg="#262626").pack()
+
+        rb = Frame(frame, bg="#262626")
+        rb.place(anchor="se", relx=1, rely=1, height=12, width=13)
+        Label(rb, image=self.image_rb, bg="#262626").pack(side='left')
+
+        Label(master=frame, text=data[0], fg='white', bg='#333333', font=("Roboto", 12), wraplength=700, anchor='w', justify='left').pack(fill='x', padx=13)
+
+        if data[-1] == 'query':
+            temp.pack(fill='x', side='left', expand=True)
+            frame.pack(side="left")
+        elif data[-1] == 'response':
+            temp.pack(fill='x', side='right', expand=True)
+            frame.pack(side="right")
+
+        master_frame.pack(fill='x', pady=(10, 0))
+
+        self.frame.after(100, lambda: self.canvas.yview_moveto(1))
+        self.update_scroll_region()
+
     def add_frame(self):
         self.frame.pack(expand=True, fill='both')
+        self.entry.focus_set()
 
     def remove_frame(self):
         self.frame.pack_forget()
@@ -843,63 +1008,8 @@ class Love:
     def update_frame(self):
         pass
 
-class ListFrame:
-    def __init__(self, parent, text_data, item_height, create_item):
-        self.master_frame = Frame(master=parent, bg="#262626")
-        self.master_frame.place(x=0, y=0, width=950, height=600)
-        self.create_item = create_item
-
-        self.parent = parent
-        self.text_data = text_data
-        self.item_number = len(text_data)
-        self.item_height = item_height
-        self.list_height = self.item_height * self.item_number
-        self.config_id = None
-
-        self.canvas = Canvas(self.master_frame, bg="#262626", bd=0, highlightthickness=0, scrollregion=(0, 0, self.parent.winfo_width(), self.list_height))
-        self.canvas.pack(expand=True, fill="both")
-
-        self.frame = Frame(self.master_frame, bg="#262626")
-        for item in text_data:
-            item = create_item(item, self.frame)
-            item.pack(pady=4, padx=10)
-
-        self.canvas.create_window((0, 0), window=self.frame, anchor='nw', height=self.list_height, width=self.parent.winfo_width())
-
-    def clean_add(self):
-        self.canvas.bind_all('<MouseWheel>', lambda event: self.canvas.yview_scroll(-int(event.delta / 60), "units"))
-        self.config_id = self.parent.bind('<Configure>', self.update_size, add='+')
-        self.update_size('')
-
-    def clean_close(self):
-        self.canvas.unbind_all('<MouseWheel>')
-        self.parent.unbind('<Configure>', self.config_id)
-
-    def update_items(self, items):
-        self.frame.destroy()
-        self.frame = Frame(self.master_frame, bg="#262626")
-        for item in items:
-            item = self.create_item(item, self.frame)
-            item.pack(pady=4, padx=10)
-        self.list_height = len(items) * self.item_height
-        self.canvas.create_window((0, 0), window=self.frame, anchor='nw', height=self.list_height,
-                                  width=self.parent.winfo_width())
-        self.canvas.config(scrollregion=(0, 0, self.parent.winfo_width(), self.list_height))
-
-    def update_size(self, _):
-        if self.list_height >= self.parent.winfo_height():
-            height = self.list_height
-            self.canvas.bind_all('<MouseWheel>',
-                                 lambda event: self.canvas.yview_scroll(-int(event.delta / 120), "units"))
-        else:
-            # height = self.master_frame.winfo_height()
-            height = self.list_height
-            self.canvas.unbind_all("<MouseWheel>")
-
-        for frame in self.frame.winfo_children():
-            frame.config(width=self.parent.winfo_width())
-        self.master_frame.place(x=0, y=0, width=self.parent.winfo_width(), height=self.parent.winfo_height())
-        self.canvas.create_window((0, 0), window=self.frame, anchor='nw', height=height, width=self.parent.winfo_width())
+    def get_path(self, path: str):
+        return self.ASSETS_PATH + path
 
 class App(Tk):
     ASSETS_PATH = "assets\\frame3\\"
@@ -924,14 +1034,14 @@ class App(Tk):
         self.stat_frame = Statistics(self)
         self.register_frame = Register(self)
         self.history_frame = History(self)
-        self.love_frame = Love(self)
+        self.bot_frame = Bot(self)
 
         self.add_frames    = {"HOME": self.home_frame.add_frame, "ADD": self.add_book_frame.add_frame, "STATISTICS": self.stat_frame.add_frame,
-                              "REGISTER": self.register_frame.add_frame, "HISTORY": self.history_frame.add_frame, "LOVE": self.love_frame.add_frame}
+                              "REGISTER": self.register_frame.add_frame, "HISTORY": self.history_frame.add_frame, "BOT": self.bot_frame.add_frame}
         self.remove_frames = {"HOME": self.home_frame.remove_frame, "ADD": self.add_book_frame.remove_frame, "STATISTICS": self.stat_frame.remove_frame,
-                              "REGISTER": self.register_frame.remove_frame, "HISTORY": self.history_frame.remove_frame, "LOVE": self.love_frame.remove_frame}
+                              "REGISTER": self.register_frame.remove_frame, "HISTORY": self.history_frame.remove_frame, "BOT": self.bot_frame.remove_frame}
         self.update_frames = {"HOME": self.home_frame.update_frame, "ADD": self.add_book_frame.update_frame, "STATISTICS": self.stat_frame.update_frame,
-                              "REGISTER": self.register_frame.update_frame, "HISTORY": self.history_frame.update_frame, "LOVE": self.love_frame.update_frame}
+                              "REGISTER": self.register_frame.update_frame, "HISTORY": self.history_frame.update_frame, "BOT": self.bot_frame.update_frame}
 
         # Configuring Window
         self.geometry(f"{self.WIDTH}x{self.HEIGHT}+{int(self.winfo_screenwidth() / 2 - self.WIDTH / 2)}+{int(self.winfo_screenheight() / 2 - self.HEIGHT / 2)}")
@@ -940,22 +1050,23 @@ class App(Tk):
         self.iconbitmap('assets\\icon.ico')
         self.minsize(self.WIDTH, self.HEIGHT)
         self.protocol("WM_DELETE_WINDOW", self.on_exit)
+        self.focus_force()
 
 
         # Loading Assets
-        self.image_books = PhotoImage(file=self.relative_to_assets("button_1.png"))
-        self.image_stat = PhotoImage(file=self.relative_to_assets("button_2.png"))
-        self.image_plus = PhotoImage(file=self.relative_to_assets("button_3.png"))
-        self.image_love = PhotoImage(file=self.relative_to_assets("button_4.png"))
-        self.image_hist = PhotoImage(file=self.relative_to_assets("button_5.png"))
-        self.image_home = PhotoImage(file=self.relative_to_assets("button_6.png"))
+        self.image_books = PhotoImage(file=self.get_path("button_1.png"))
+        self.image_stat = PhotoImage(file=self.get_path("button_2.png"))
+        self.image_plus = PhotoImage(file=self.get_path("button_3.png"))
+        self.image_love = PhotoImage(file=self.get_path("button_4.png"))
+        self.image_hist = PhotoImage(file=self.get_path("button_5.png"))
+        self.image_home = PhotoImage(file=self.get_path("button_6.png"))
 
-        self.image_books_hover = PhotoImage(file=self.relative_to_assets("button_hover_1.png"))
-        self.image_stat_hover = PhotoImage(file=self.relative_to_assets("button_hover_2.png"))
-        self.image_plus_hover = PhotoImage(file=self.relative_to_assets("button_hover_3.png"))
-        self.image_love_hover = PhotoImage(file=self.relative_to_assets("button_hover_4.png"))
-        self.image_hist_hover = PhotoImage(file=self.relative_to_assets("button_hover_5.png"))
-        self.image_home_hover = PhotoImage(file=self.relative_to_assets("button_hover_6.png"))
+        self.image_books_hover = PhotoImage(file=self.get_path("button_hover_1.png"))
+        self.image_stat_hover = PhotoImage(file=self.get_path("button_hover_2.png"))
+        self.image_plus_hover = PhotoImage(file=self.get_path("button_hover_3.png"))
+        self.image_love_hover = PhotoImage(file=self.get_path("button_hover_4.png"))
+        self.image_hist_hover = PhotoImage(file=self.get_path("button_hover_5.png"))
+        self.image_home_hover = PhotoImage(file=self.get_path("button_hover_6.png"))
 
         self.create_page()
         self.mainloop()
@@ -968,7 +1079,7 @@ class App(Tk):
         self.canvas.coords(self.rect, 0, 0, 50, self.winfo_height())
         self.update_frames[self.cur_page]()
 
-    def relative_to_assets(self, path: str):
+    def get_path(self, path: str):
         return self.ASSETS_PATH + path
 
     @staticmethod
@@ -992,7 +1103,7 @@ class App(Tk):
             self.btn_home = Button(center_frame, image=self.image_home, borderwidth=0, highlightthickness=0, activebackground='#06A67E',
                                    command=lambda: self.change_frame("HOME"), relief="flat")
             self.btn_love = Button(center_frame, image=self.image_love, borderwidth=0, highlightthickness=0, activebackground='#06A67E',
-                                   command=lambda: self.change_frame("LOVE"), relief="flat")
+                                   command=lambda: self.change_frame("BOT"), relief="flat")
             self.btn_hist = Button(center_frame, image=self.image_hist, borderwidth=0, highlightthickness=0, activebackground='#06A67E',
                                    command=lambda: self.change_frame("HISTORY"), relief="flat")
 
@@ -1031,12 +1142,5 @@ class App(Tk):
         self.add_frames[self.cur_page]()
         self.bind("<Configure>", self.on_resize, add='+')
 
-if __name__ == "__main__":
-    db = DataBase()
-    # App.USER = "USER"
-    # # App.USER_ID = "#00002"
-    # app = App()
-    try:
-        UserAdmin()
-    except Exception:
-        pass
+ua_data = UserAdminManager()
+library = Library()
