@@ -7,7 +7,7 @@ class Library:
     FINE = 5
     def __init__(self):
         try:
-            with open("db\\books.csv", mode='r', newline='') as file:
+            with open("db/books.csv", mode='r', newline='') as file:
                 data = list(csv.reader(file))
                 self.books = data[1:]
                 self.l_header = data[0]
@@ -16,7 +16,7 @@ class Library:
             exit()
 
         try:
-            with open("db\\logger.csv", mode='r', newline='') as file:
+            with open("db/logger.csv", mode='r', newline='') as file:
                 data = list(csv.reader(file))
                 self.register = data[1:]
                 self.r_header = data[0]
@@ -29,7 +29,7 @@ class Library:
 
     def update_library(self):
         try:
-            with open('db\\books.csv', mode='w', newline='') as file:
+            with open('db/books.csv', mode='w', newline='') as file:
                 writer = csv.writer(file)
                 writer.writerows([self.l_header] + self.books)
         except OSError as e:
@@ -37,7 +37,7 @@ class Library:
 
     def update_register(self):
         try:
-            with open('db\\logger.csv', mode='w', newline='') as file:
+            with open('db/logger.csv', mode='w', newline='') as file:
                 writer = csv.writer(file)
                 writer.writerows([self.r_header] + self.register)
         except OSError as e:
@@ -90,9 +90,9 @@ class Library:
 class UserAdminManager:
     USERS = None
     def __init__(self):
-        with open("db\\users.csv", mode='r', newline='') as file:
+        with open("db/users.csv", mode='r', newline='') as file:
             UserAdminManager.USERS = list(csv.reader(file))[1:]
-        with open("db\\admin.csv", mode='r', newline='') as file:
+        with open("db/admin.csv", mode='r', newline='') as file:
             self.admins = list(csv.reader(file))[1:]
 
         self.u_email = [row[2] for row in self.USERS]
@@ -105,7 +105,7 @@ class UserAdminManager:
             uid = '#' + '0'*(5 - len(str(uid_num))) + str(uid_num)
         except IndexError:
             uid = "#00001"
-        with open("db\\users.csv", mode='a', newline='\n') as file:
+        with open("db/users.csv", mode='a', newline='\n') as file:
             writer = csv.writer(file)
             writer.writerow([uid] + data)
         UserAdminManager.USERS.append([uid] + data)
