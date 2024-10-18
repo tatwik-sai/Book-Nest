@@ -1,0 +1,101 @@
+ISBN,ID,Title,Author,Publisher,Genre,Language,Copies,Borrowed,Maintenance
+978-3-19104-460-6,#10001,The Hobbit,Jane Austen,Macmillan Publishers,Mystery,Italian,0,1,0
+978-2-42533-302-1,#10002,A Wizard of Earthsea,Jane Austen,HarperCollins,Fiction,Spanish,19,11,3
+978-4-75843-396-3,#10003,The Name of the Wind,Agatha Christie,Random House,Education,Spanish,8,6,0
+978-3-33594-676-3,#10004,Mistborn: The Final Empire,Arthur C. Clarke,HarperCollins,Fiction,Italian,4,3,0
+978-5-56563-816-8,#10005,The Lies of Locke Lamora,Arthur C. Clarke,HarperCollins,Education,French,9,5,0
+978-5-66075-811-2,#10006,Eragon,H.G. Wells,Hachette Livre,NonFiction,Spanish,12,6,2
+978-4-58301-620-8,#10007,City of Bones,H.G. Wells,Scholastic,Mystery,French,17,5,0
+978-2-48432-847-0,#10008,The Night Circus,Arthur C. Clarke,Penguin Books,Fiction,German,2,2,0
+978-1-15069-837-9,#10009,Stardust,J.K. Rowling,Oxford University Press,Fantasy,Spanish,20,9,2
+978-7-37719-817-6,#10010,The Priory of the Orange Tree,Agatha Christie,Scholastic,Mystery,Spanish,4,1,1
+978-4-41957-897-9,#10011,The Great Gatsby,Arthur C. Clarke,HarperCollins,Education,French,9,9,0
+978-0-31806-773-3,#10012,To Kill a Mockingbird,George R.R. Martin,Scholastic,Education,Spanish,8,6,1
+978-2-96614-636-3,#10013,1984,George R.R. Martin,Oxford University Press,Mystery,Italian,18,6,11
+978-9-45673-847-1,#10014,The Catcher in the Rye,George R.R. Martin,Hachette Livre,Fiction,Spanish,8,1,2
+978-2-73129-127-3,#10015,The Road,Agatha Christie,Macmillan Publishers,Education,Spanish,5,0,2
+978-2-98573-486-1,#10016,Life of Pi,J.K. Rowling,Oxford University Press,Fantasy,English,5,4,0
+978-5-89772-411-7,#10017,The Alchemist,H.G. Wells,Penguin Books,NonFiction,English,13,0,5
+978-2-52552-551-4,#10018,Where the Crawdads Sing,George R.R. Martin,Hachette Livre,Fantasy,Spanish,1,1,0
+978-0-49144-505-2,#10019,Normal People,J.R.R. Tolkien,Random House,Mystery,French,19,6,12
+978-1-45272-534-3,#10020,The Goldfinch,Mark Twain,Hachette Livre,Fantasy,Italian,9,0,0
+978-2-79658-902-5,#10021,Sapiens: A Brief History of Humankind,Jane Austen,Penguin Books,Mystery,Italian,2,2,0
+978-9-77451-977-9,#10022,Educated,Mark Twain,Random House,Education,French,12,9,0
+978-6-71457-938-6,#10023,Becoming,George R.R. Martin,Random House,Education,Spanish,10,5,5
+978-5-36605-288-2,#10024,The Immortal Life of Henrietta Lacks,Stephen King,Hachette Livre,Education,Italian,2,2,0
+978-5-83632-152-7,#10025,The Body Keeps the Score,Stephen King,Simon & Schuster,Fiction,German,14,7,7
+978-8-69744-521-0,#10026,Born a Crime,J.K. Rowling,Oxford University Press,NonFiction,English,5,0,1
+978-6-41784-685-7,#10027,The Wright Brothers,Agatha Christie,Random House,Fiction,French,10,0,1
+978-6-71621-961-0,#10028,Bad Blood,J.K. Rowling,HarperCollins,Education,Spanish,14,4,8
+978-8-87650-849-3,#10029,The Power of Habit,Mark Twain,Scholastic,Fantasy,English,12,3,7
+978-4-54546-160-9,#10030,Quiet: The Power of Introverts,H.G. Wells,Oxford University Press,Fiction,English,2,0,0
+978-3-80361-261-9,#10031,Mindset: The New Psychology of Success,Jane Austen,Simon & Schuster,Education,German,11,-1,2
+978-4-14050-690-3,#10032,The Element,Arthur C. Clarke,Hachette Livre,Education,English,7,2,2
+978-6-84820-703-2,#10033,How to Win Friends and Influence People,H.G. Wells,Macmillan Publishers,Education,Italian,13,5,4
+978-0-87464-539-8,#10034,Drive,J.R.R. Tolkien,Oxford University Press,Mystery,English,10,7,0
+978-6-32643-131-8,#10035,The 7 Habits of Highly Effective People,Isaac Asimov,Hachette Livre,Fiction,English,4,1,0
+978-5-37694-205-9,#10036,Grit: The Power of Passion and Perseverance,Agatha Christie,HarperCollins,Fantasy,Italian,14,2,2
+978-8-63874-836-5,#10037,Teach Like a Champion,Isaac Asimov,Simon & Schuster,Fiction,English,3,1,0
+978-9-86705-665-5,#10038,A More Beautiful Question,Agatha Christie,Macmillan Publishers,Education,French,19,18,1
+978-9-17432-611-5,#10039,The First Days of School,Agatha Christie,Random House,NonFiction,French,19,19,0
+978-4-54477-599-1,#10040,The Book Whisperer,Arthur C. Clarke,Penguin Books,Fiction,Spanish,2,1,0
+978-9-41253-857-5,#10041,The Girl with the Dragon Tattoo,Stephen King,Hachette Livre,Mystery,German,10,10,0
+978-3-63596-974-6,#10042,Gone Girl,Stephen King,Scholastic,Mystery,English,12,5,2
+978-7-78451-306-6,#10043,The Da Vinci Code,Stephen King,Macmillan Publishers,Mystery,Italian,11,6,3
+978-4-54128-267-6,#10044,Big Little Lies,Agatha Christie,Scholastic,Education,German,1,0,0
+978-8-32681-472-5,#10045,The Woman in the Window,Arthur C. Clarke,Simon & Schuster,Mystery,French,15,8,1
+978-4-50532-365-8,#10046,And Then There Were None,J.K. Rowling,Hachette Livre,Fantasy,Spanish,17,12,0
+978-6-96505-268-9,#10047,The Cuckoo's Calling,Jane Austen,Scholastic,NonFiction,German,11,8,1
+978-1-69654-655-4,#10048,In the Woods,Jane Austen,Simon & Schuster,Mystery,French,7,4,3
+978-0-32757-259-4,#10049,The No. 1 Ladies' Detective Agency,Mark Twain,Simon & Schuster,Fantasy,French,10,8,0
+978-5-24779-816-6,#10050,The Secret History,Agatha Christie,Simon & Schuster,Education,German,7,0,1
+978-4-20571-188-5,#10051,The House of the Spirits,H.G. Wells,Penguin Books,Fantasy,Spanish,8,4,1
+978-7-41943-615-7,#10052,The Kite Runner,H.G. Wells,Oxford University Press,Education,French,13,3,0
+978-8-92614-948-3,#10053,The Ocean at the End of the Lane,Agatha Christie,Scholastic,NonFiction,German,9,3,4
+978-2-59899-298-9,#10054,Outliers: The Story of Success,Jane Austen,Macmillan Publishers,NonFiction,German,20,6,0
+978-0-39792-384-8,#10055,The Power of Now,Arthur C. Clarke,Macmillan Publishers,Mystery,French,5,1,3
+978-3-53864-658-9,#10056,The Shining,George R.R. Martin,Macmillan Publishers,NonFiction,English,5,2,2
+978-1-97169-381-7,#10057,The Subtle Art of Not Giving a F*ck,Arthur C. Clarke,Macmillan Publishers,Fiction,Spanish,1,1,0
+978-8-94023-375-1,#10058,Harry Potter and the Sorcerer's Stone,Isaac Asimov,Simon & Schuster,Education,Italian,3,3,0
+978-2-23597-434-7,#10059,Americanah,Mark Twain,Oxford University Press,Fantasy,German,1,3,0
+978-1-74518-283-3,#10060,The Silent Patient,Stephen King,Random House,Fiction,German,5,0,1
+978-6-75253-524-3,#10061,Eleanor Oliphant Is Completely Fine,J.K. Rowling,Scholastic,Fiction,Spanish,14,7,5
+978-0-36183-604-2,#10062,The Testaments,Arthur C. Clarke,Macmillan Publishers,Fantasy,Spanish,11,3,1
+978-8-56055-153-5,#10063,Circe,Isaac Asimov,Penguin Books,NonFiction,Spanish,18,16,1
+978-5-33565-322-2,#10064,The Henna Artist,George R.R. Martin,HarperCollins,Education,English,20,10,6
+978-8-97918-806-1,#10065,Anxious People,J.R.R. Tolkien,Oxford University Press,NonFiction,French,6,4,2
+978-6-92021-849-7,#10066,Before We Were Strangers,Agatha Christie,Simon & Schuster,Fiction,Spanish,8,3,5
+978-1-40103-531-6,#10067,The Vanishing Half,H.G. Wells,Macmillan Publishers,Fantasy,Italian,8,7,0
+978-2-63095-649-2,#10068,The House on Mango Street,Agatha Christie,Penguin Books,Fantasy,English,4,2,2
+978-4-37793-362-2,#10069,The Song of Achilles,George R.R. Martin,Hachette Livre,Education,English,5,1,0
+978-2-66900-313-9,#10070,The Midnight Library,J.K. Rowling,Random House,Fiction,Italian,18,2,4
+978-7-89019-366-8,#10071,"Where'd You Go, Bernadette",Jane Austen,HarperCollins,Fiction,Italian,10,3,6
+978-9-22882-186-7,#10072,The Outsiders,Agatha Christie,Scholastic,Mystery,Italian,15,11,0
+978-5-12991-913-6,#10073,Dune,George R.R. Martin,Simon & Schuster,Education,Italian,17,8,9
+978-5-23924-825-3,#10074,The Invisible Man,J.R.R. Tolkien,Random House,Mystery,German,8,0,3
+978-4-84052-777-3,#10075,Fahrenheit 451,Jane Austen,Hachette Livre,Fiction,English,1,1,0
+978-3-27413-464-2,#10076,The Color Purple,Mark Twain,Penguin Books,NonFiction,French,4,2,0
+978-5-29406-259-2,#10077,The Martian,George R.R. Martin,Random House,Mystery,German,6,4,2
+978-2-66044-390-2,#10078,The Help,J.K. Rowling,Random House,Mystery,Italian,1,0,1
+978-8-34425-506-8,#10079,Pride and Prejudice,Arthur C. Clarke,Simon & Schuster,Fantasy,Italian,16,15,1
+978-0-12362-577-7,#10080,Emma,George R.R. Martin,Simon & Schuster,Fiction,French,15,11,0
+978-5-68647-587-4,#10081,Wuthering Heights,J.K. Rowling,Macmillan Publishers,Education,Italian,9,3,2
+978-2-68317-357-2,#10082,The Catcher in the Rye,Agatha Christie,HarperCollins,Fiction,English,2,1,0
+978-6-16088-321-7,#10083,Beloved,Isaac Asimov,Scholastic,NonFiction,Spanish,10,2,0
+978-7-10611-439-3,#10084,The Picture of Dorian Gray,Mark Twain,Random House,Fantasy,German,14,7,3
+978-5-58431-197-9,#10085,The Goldfinch,Arthur C. Clarke,Penguin Books,Fantasy,English,14,12,0
+978-5-90222-224-4,#10086,Little Fires Everywhere,J.R.R. Tolkien,Random House,Fiction,English,12,3,0
+978-8-78133-247-8,#10087,The Seven Husbands of Evelyn Hugo,Isaac Asimov,Random House,Fiction,English,19,18,0
+978-2-10955-997-1,#10088,The Lovely Bones,Arthur C. Clarke,Penguin Books,Education,Italian,15,4,0
+978-8-92053-398-1,#10089,A Court of Thorns and Roses,Stephen King,Random House,Fantasy,English,13,8,0
+978-8-93649-752-9,#10090,The Nightingale,Isaac Asimov,Macmillan Publishers,NonFiction,Spanish,2,0,2
+978-9-94223-191-3,#10091,The Tattooist of Auschwitz,Isaac Asimov,Penguin Books,Mystery,German,7,0,3
+978-3-88654-891-2,#10092,The Book Thief,Agatha Christie,Oxford University Press,Fiction,French,8,8,0
+978-6-65681-687-1,#10093,A Man Called Ove,J.K. Rowling,Penguin Books,Fantasy,Spanish,1,1,0
+978-8-60390-440-6,#10094,The Rosie Project,J.K. Rowling,Hachette Livre,Education,Italian,1,0,1
+978-4-99604-482-5,#10095,The 100-Year-Old Man that Disappeared,Arthur C. Clarke,Scholastic,Fiction,English,2,2,0
+978-6-94043-546-7,#10096,The Goldfinch,Stephen King,Simon & Schuster,NonFiction,English,3,2,0
+978-1-89993-461-9,#10097,Educated,Stephen King,Random House,Education,Italian,3,1,0
+978-2-43233-186-2,#10098,Becoming,Jane Austen,Simon & Schuster,Mystery,French,11,6,2
+978-0-65112-888-6,#10099,The Guest List,Agatha Christie,Oxford University Press,Education,English,15,0,7
+978-8-46854-994-5,#10100,The Woman in Cabin 10,Stephen King,Oxford University Press,Fiction,French,8,4,4
