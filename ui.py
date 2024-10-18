@@ -17,7 +17,7 @@ class UserAdmin(Tk):
         1)USER  - Borrow Books
         2)ADMIN - Manage Library and view Records.
     """
-    ASSETS_PATH = "assets\\frame1\\"
+    ASSETS_PATH = "assets/frame1/"
     def __init__(self):
         super().__init__()
         # Requirements
@@ -31,7 +31,7 @@ class UserAdmin(Tk):
         self.geometry(f"700x550+{int(self.winfo_screenwidth()/2  - 700/2)}+{int(self.winfo_screenheight()/2  - 550/2)}")
         self.configure(bg="#262626")
         self.title("BookNest")
-        self.iconbitmap('assets\\icon.ico')
+        self.iconbitmap('assets/icon.ico')
         self.resizable(False, False)
 
 
@@ -71,7 +71,7 @@ class SignIU(Tk):
     """
 
     """
-    ASSETS_PATH = "assets\\frame2\\"
+    ASSETS_PATH = "assets/frame2/"
 
     def __init__(self):
         super().__init__()
@@ -110,7 +110,7 @@ class SignIU(Tk):
         self.geometry(f"917x580+{int(self.winfo_screenwidth()/2  - 917/2)}+{int(self.winfo_screenheight()/2  - 580/2)}")
         self.configure(bg="#262626")
         self.title("BookNest")
-        self.iconbitmap('assets\\icon.ico')
+        self.iconbitmap('assets/icon.ico')
         self.resizable(False, False)
         self.focus_force()
 
@@ -274,7 +274,7 @@ class SignIU(Tk):
         self.signin_btn.place(x=100, y=317, width=145, height=50)
 
 class Home:
-    ASSETS_PATH = "assets\\home\\"
+    ASSETS_PATH = "assets/home/"
     TOP_GAP = 130
     def __init__(self, parent):
         self.parent = parent
@@ -427,7 +427,7 @@ class Home:
             self.list_frame.update_items(books)
 
 class AddBook:
-    ASSETS_PATH = "assets\\add_book\\"
+    ASSETS_PATH = "assets/add_book/"
     def __init__(self, parent):
         self.parent = parent
         self.frame = Frame(parent, height=650, width=950, bg="#262626")
@@ -508,7 +508,7 @@ class AddBook:
             show_notification(self.frame, "Make sure to fill all the fields.", fg='red')
 
 class Statistics:
-    ASSETS_PATH = "assets\\stat\\"
+    ASSETS_PATH = "assets/stat/"
     def __init__(self, parent):
         self.parent = parent
         self.frame = Frame(parent, height=650, width=950, bg="#262626")
@@ -662,7 +662,7 @@ class Statistics:
         pass
 
 class Register:
-    ASSETS_PATH = "assets\\register\\"
+    ASSETS_PATH = "assets/register/"
     TOP_GAP = 100
     def __init__(self, parent):
         self.parent = parent
@@ -798,7 +798,7 @@ class Register:
             send_email_thread(subject, body, key)
 
 class History:
-    ASSETS_PATH = "assets\\history\\"
+    ASSETS_PATH = "assets/history/"
     TOP_GAP = 100
 
     def __init__(self, parent):
@@ -898,7 +898,7 @@ class History:
             show_notification(self.frame, "You have borrowed the book successfully.", fg='white')
 
 class Bot:
-    ASSETS_PATH = "assets\\bot\\"
+    ASSETS_PATH = "assets/bot/"
     def __init__(self, parent):
         self.parent = parent
         self.frame = Frame(parent, height=1000, width=600, bg="#262626")
@@ -1012,7 +1012,7 @@ class Bot:
         return self.ASSETS_PATH + path
 
 class App(Tk):
-    ASSETS_PATH = "assets\\frame3\\"
+    ASSETS_PATH = "assets/frame3/"
     WIDTH = 1000
     HEIGHT = 650
     USER = None
@@ -1047,7 +1047,7 @@ class App(Tk):
         self.geometry(f"{self.WIDTH}x{self.HEIGHT}+{int(self.winfo_screenwidth() / 2 - self.WIDTH / 2)}+{int(self.winfo_screenheight() / 2 - self.HEIGHT / 2)}")
         self.configure(bg="#FFFFFF")
         self.title("BookNest")
-        self.iconbitmap('assets\\icon.ico')
+        self.iconbitmap('assets/icon.ico')
         self.minsize(self.WIDTH, self.HEIGHT)
         self.protocol("WM_DELETE_WINDOW", self.on_exit)
         self.focus_force()
