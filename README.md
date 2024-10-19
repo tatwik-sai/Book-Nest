@@ -1,7 +1,7 @@
 # Book-Nest
 #### A simple user-friendly Library Management System.
 
-###### Downloading and Executing the Project
+##### Downloading and Executing the Project
 Download the project from github or clone it using the following command.
 
 ```
@@ -17,7 +17,7 @@ pip install -r requirements.txt
 - or you can simply run the BookNest.exe file.
 
 
-###### Team Members
+##### Team Members
 | Name            | Roll Number |
 | --------------- | ----------- |
 | M Tatwik Sai    | BT2024200   |
