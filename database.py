@@ -3,6 +3,11 @@ import datetime
 
 
 class Library:
+    """
+        This class manages the collection of books, user borrowing history, and library operations.
+        It handles reading and writing book data from/to CSV files, tracking borrowed books, and maintaining
+        a register of all transactions related to borrowing and returning books.
+     """
     DUE_PERIOD = 10
     FINE = 5
     def __init__(self):
@@ -88,6 +93,11 @@ class Library:
         return due_info
 
 class UserAdminManager:
+    """
+        This class manages the data related to users and admins.
+        Handles csv files and provides method to add user.
+        Provides methods to check if the credentials match with the users or admin.
+    """
     USERS = None
     def __init__(self):
         with open("db/users.csv", mode='r', newline='') as file:
