@@ -1,7 +1,7 @@
 from tkinter import font, ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
+import matplotlib.dates as m_dates
 from matplotlib.ticker import MaxNLocator
 from database import Library, UserAdminManager
 from utils import *
@@ -69,7 +69,9 @@ class UserAdmin(Tk):
 
 class SignIU(Tk):
     """
-
+       Manage sign-up and sign-in functionality.
+       It allows users to switch between sign-up and sign-in pages, validate inputs,
+       and authenticate users or admins based on stored credentials.
     """
     ASSETS_PATH = "assets/frame2/"
 
@@ -242,7 +244,7 @@ class SignIU(Tk):
         self.canvas.create_image(528, 422, image=self.image_password)
         self.canvas.create_image(676, 422, image=self.entry_image)
 
-        self.entry_password = Entry(bd=0, bg="#E7E7E7", font=("Roboto", 11), highlightthickness=0)
+        self.entry_password = Entry(bd=0, bg="#E7E7E7", font=("Roboto", 11), highlightthickness=0, show="*")
         self.entry_password.place(x=552, y=401, width=232, height=40)
 
         self.signup_btn = Button(image=self.button_signup_1, borderwidth=0, highlightthickness=0, command=self.sign_up,
@@ -274,6 +276,12 @@ class SignIU(Tk):
         self.signin_btn.place(x=100, y=317, width=145, height=50)
 
 class Home:
+    """ This class manages the library's book display. It provides:
+       - Search functionality: Filter books by title or author in real-time.
+         - ADMIN: Can manage book copies, remove books, or send them to maintenance.
+         - USER: Can borrow available books.
+       - Event handling: Real-time updates and actions like borrowing or book removal.
+    """
     ASSETS_PATH = "assets/home/"
     TOP_GAP = 130
     def __init__(self, parent):
@@ -282,9 +290,20 @@ class Home:
         self.copies_var = []
         self.prv_search = None
 
+        # Loading images
+        self.image_search = PhotoImage(file=self.get_path("image_1.png"))
+        self.image_left = PhotoImage(file=self.get_path("left_edge.png"))
+        self.image_right = PhotoImage(file=self.get_path("right_edge.png"))
+        self.image_i_left = PhotoImage(file=self.get_path("item_left.png"))
+        self.image_i_right = PhotoImage(file=self.get_path("item_right.png"))
+        self.image_button = PhotoImage(file=self.get_path("button_.png"))
+        self.image_maintenance = PhotoImage(file=self.get_path("maintenance.png"))
+        self.image_remove = PhotoImage(file=self.get_path("remove.png"))
+
+        # Page Heading
         Label(master=self.frame, text="Library", font=("Roboto", 25, 'bold'), background="#262626", foreground='white').place(x=10, y=15)
 
-        self.image_search = PhotoImage(file=self.get_path("image_1.png"))
+        # Adding the Searchbar
         self.search_canvas = Canvas(master=self.frame, bg="#262626", bd=0, highlightthickness=0)
         self.search_canvas.create_image(150, 20, image=self.image_search)
         self.entry_search = Entry(bd=0, bg="#E7E7E7", fg="#000716", highlightthickness=0, font=font.Font(family="Roboto", size=11))
@@ -293,8 +312,7 @@ class Home:
         self.search_canvas.place(x=self.parent.winfo_width() - 350, y=10, height=41, width=300)
         self.entry_search.bind("<KeyRelease>", self.update_books)
 
-        self.image_left = PhotoImage(file=self.get_path("left_edge.png"))
-        self.image_right = PhotoImage(file=self.get_path("right_edge.png"))
+        # Setting up the Headings.
         self.head_canvas = Canvas(master=self.frame, bg="#262626", bd=0, highlightthickness=0)
         self.head_canvas.create_image(12, 22, image=self.image_left)
         self.right_id = self.head_canvas.create_image(0, 0, image=self.image_right)
@@ -311,13 +329,7 @@ class Home:
             Label(master=self.frame, text="Copies", font=("Roboto", 20, 'bold'), background="#F37577",
                   foreground='white').place(relx=0.74, y=75)
 
-        self.image_i_left = PhotoImage(file=self.get_path("item_left.png"))
-        self.image_i_right = PhotoImage(file=self.get_path("item_right.png"))
-        self.image_button = PhotoImage(file=self.get_path("button_.png"))
-        self.image_maintenance = PhotoImage(file=self.get_path("maintenance.png"))
-        self.image_remove = PhotoImage(file=self.get_path("remove.png"))
-
-
+        # Adding data with scroll view.
         self.scroll_frame = Frame(self.frame, height = self.parent.winfo_height() - self.TOP_GAP, width=self.parent.winfo_width()-50, bg="#262626")
         self.scroll_frame.pack(fill='both', expand=True, pady=(self.TOP_GAP,0))
         self.lib_books = library.lib_books()
@@ -427,18 +439,30 @@ class Home:
             self.list_frame.update_items(books)
 
 class AddBook:
+    """
+        This class provides the interface for adding new books to the library's collection and checks for typical errors.
+        - Input Fields: Allows users to input the title, author, ISBN, publisher, genre, language, and number of copies.
+        - Book Addition: Adds a new book entry to the library's database and updates the system with details like copies, borrowing status, and maintenance count.
+        - UI Elements: Creates a canvas with input fields and a button for confirming the addition of the book.
+        - Frame Management: Handles showing, updating, and removing the interface frame from the parent window.
+    """
     ASSETS_PATH = "assets/add_book/"
     def __init__(self, parent):
         self.parent = parent
         self.frame = Frame(parent, height=650, width=950, bg="#262626")
 
+        # Loading Images.
+        self.image_button = PhotoImage(file=self.get_path("button.png"))
         self.image_bg = PhotoImage(file=self.get_path("frame_bg.png"))
 
+        # Adding the background.
         self.canvas = Canvas(self.frame, height=610, width=730, bg="#262626", borderwidth=0, bd=0, highlightthickness=0)
         self.canvas.create_image(2, 8, anchor='nw', image=self.image_bg)
 
+        # Restricting input in isbn entry.
         self.validate_isbn = self.frame.register(lambda c: c in '123456789-X')
 
+        # Adding data Entries.
         self.entry_title = Entry(master=self.frame, background="white", borderwidth=0, font=font.Font(family="Roboto", size=11))
         self.entry_author = Entry(master=self.frame, background="white", borderwidth=0, font=font.Font(family="Roboto", size=11))
         self.entry_isbn = Entry(master=self.frame, background="white", borderwidth=0, font=font.Font(family="Roboto", size=11), validate='key', validatecommand=(self.validate_isbn, "%S"))
@@ -453,16 +477,17 @@ class AddBook:
         self.canvas.create_window((538, 251), window=self.entry_publisher, anchor='center', height=37, width=230)
         self.canvas.create_window((538, 356), window=self.entry_lang, anchor='center', height=37, width=230)
 
-        self.image_button = PhotoImage(file=self.get_path("button.png"))
+        # Combobox to get copies of book.
+        self.copies = IntVar(value=1)
+        self.comb_box = ttk.Combobox(self.frame, textvariable=self.copies, values=[str(i) for i in range(1, 101)],
+                                     background="#333333", state='readonly', exportselection=False)
+        self.canvas.create_window((360, 470), window=self.comb_box, anchor='center', width=35)
+
+        # Button to add book.
         self.button_add = Button(image=self.image_button, background="#333333", activebackground="#333333", borderwidth=0, command=self.add_book)
         self.canvas.create_window((340, 520), window=self.button_add, anchor='center', height=60, width=230)
 
         self.canvas.create_text((310, 470), text="Copies", font=('Roboto', 12), fill="#FFFFFF")
-
-        self.copies = IntVar(value=1)
-        self.comb_box = ttk.Combobox(self.frame, textvariable=self.copies, values=[str(i) for i in range(1, 101)], background="#333333", state='readonly', exportselection=False)
-        self.canvas.create_window((360, 470), window=self.comb_box, anchor='center', width=35)
-
         self.canvas.place(relx=0.5, rely=0.52, anchor='center')
 
     def get_path(self, path: str):
@@ -508,6 +533,14 @@ class AddBook:
             show_notification(self.frame, "Make sure to fill all the fields.", fg='red')
 
 class Statistics:
+    """
+    This class creates a visual interface displaying various statistics related to the library.
+    - Charts:
+        - Line Chart: Displays the number of books borrowed over time.
+        - Pie Chart: Shows the inventory status of books (e.g., available, borrowed, maintenance).
+        - Bar Graph: Illustrates the distribution of books across different genres.
+    - Frame Management: Handles displaying and removing the frame in the parent window.
+    """
     ASSETS_PATH = "assets/stat/"
     def __init__(self, parent):
         self.parent = parent
@@ -515,15 +548,18 @@ class Statistics:
         self.frame.rowconfigure((0, 1), weight=1, uniform='b')
         self.frame.columnconfigure((0, 1), weight=1, uniform='a')
 
+        # Loading the Images
         self.image_lt = PhotoImage(file=self.get_path('lt.png'))
         self.image_lb = PhotoImage(file=self.get_path('lb.png'))
         self.image_rt = PhotoImage(file=self.get_path('rt.png'))
         self.image_rb = PhotoImage(file=self.get_path('rb.png'))
 
+        # Initialising Frames for graphs.
         self.top_frame = Frame(self.frame, bg='#333333')
         self.bottom_left_frame = Frame(self.frame, bg="#333333")
         self.bottom_right_frame = Frame(self.frame, bg="#333333")
 
+        # Making the corners round
         for parent_frame in (self.top_frame, self.bottom_right_frame, self.bottom_left_frame):
             lt = Frame(parent_frame, bg='#262626')
             lt.place(x=0, y=0, height=25, width=25)
@@ -541,10 +577,12 @@ class Statistics:
             rb.place(anchor="se", relx=1, rely=1, height=25, width=25)
             Label(rb, image=self.image_rb, bg="#262626").pack(side='left')
 
+        # Placing the Frames.
         self.top_frame.grid(row=0, column=0, columnspan=2, sticky='nsew', padx=12, pady=(12, 0))
         self.bottom_left_frame.grid(row=1, column=0, sticky="nsew", padx=(12, 0), pady=12)
         self.bottom_right_frame.grid(row=1, column=1, sticky="nsew", padx=12, pady=12)
 
+        # Data for plots
         today = datetime.date.today()
         dates = [(today - datetime.timedelta(days=x)) for x in range(10)]
         books_borrowed = line_chart_values(library.register, dates)
@@ -552,6 +590,7 @@ class Statistics:
         categories = ['Fiction', 'NonFiction', 'Mystery', 'Education', 'Fantasy']
         values = bar_values(library.books, categories)
 
+        # Adding graphs to screen.
         self.add_line_chart(books_borrowed, dates)
         self.add_bar_graph(categories, values)
         self.add_pie_chart(["Available", "Borrowed", "Maintenance"], pie_values(library.books))
@@ -572,7 +611,7 @@ class Statistics:
         y_max = max(books_borrowed) + 3  # Slightly higher than the max value
         ax.set_ylim(y_min, y_max)
 
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%d %b'))
+        ax.xaxis.set_major_formatter(m_dates.DateFormatter('%d %b'))
         ax.yaxis.set_major_locator(MaxNLocator(integer=True))
         ax.set_xticks(dates)
         ax.tick_params(axis='both', which='major', labelsize=10, colors='white')
@@ -596,12 +635,12 @@ class Statistics:
 
         fig, ax = plt.subplots(figsize=(5, 5))
 
-        wedges, texts, autotexts = ax.pie(values, labels=labels, colors=colors, autopct='%1.0f%%',
+        wedges, texts, auto_texts = ax.pie(values, labels=labels, colors=colors, autopct='%1.0f%%',
                                           startangle=90, pctdistance=0.85, shadow=True)
 
         for text in texts:
             text.set_color('white')
-        for autotext in autotexts:
+        for autotext in auto_texts:
             autotext.set_color('white')
             autotext.set_weight('bold')
 
@@ -658,25 +697,36 @@ class Statistics:
     def remove_frame(self):
         self.frame.pack_forget()
 
-    def update_frame(self):
-        pass
-
 class Register:
+    """
+    This class provides an interface for displaying and managing the borrowing history of the library's users.
+
+    - Borrowing History: Displays the list of borrowed books along with borrower details and dates.
+    - Interactive List: Allows Admin to confirm the return of books directly from the interface.
+    - Notifications: Sends email notifications to users who have overdue books.
+    """
     ASSETS_PATH = "assets/register/"
     TOP_GAP = 100
     def __init__(self, parent):
         self.parent = parent
         self.frame = Frame(parent, height=1000, width=600, bg="#262626")
 
+        # Loading Images
         self.image_notify = PhotoImage(file=self.get_path("notify_btn.png"))
-
-        Label(self.frame, text="Borrowing History", font=("Roboto", 20, 'bold'), background='#262626', fg='white').place( x=10, y=8)
-        Button(self.frame, image=self.image_notify, background='#262626', activebackground="#262626", borderwidth=0, command=self.send_notifications).place(anchor='ne', y=4, relx=1)
-
-
         self.image_left = PhotoImage(file=self.get_path("left_edge.png"))
         self.image_right = PhotoImage(file=self.get_path("right_edge.png"))
+        self.image_i_left = PhotoImage(file=self.get_path("item_left.png"))
+        self.image_i_right = PhotoImage(file=self.get_path("item_right.png"))
+        self.image_done = PhotoImage(file=self.get_path("done.png"))
+        self.image_return = PhotoImage(file=self.get_path("return.png"))
 
+        # Page heading
+        Label(self.frame, text="Borrowing History", font=("Roboto", 20, 'bold'), background='#262626', fg='white').place( x=10, y=8)
+
+        # Send Notification Button
+        Button(self.frame, image=self.image_notify, background='#262626', activebackground="#262626", borderwidth=0, command=self.send_notifications).place(anchor='ne', y=4, relx=1)
+
+        # Setting up the headings
         self.head_canvas = Canvas(master=self.frame, bg="#262626", bd=0, highlightthickness=0)
         self.head_canvas.create_image(12, 22, image=self.image_left)
         self.right_id = self.head_canvas.create_image(0, 0, image=self.image_right)
@@ -693,12 +743,7 @@ class Register:
         Label(master=self.frame, text="Returned", font=("Roboto", 20, 'bold'), background="#F37577",
               foreground='white').place(anchor='ne', relx=0.98, y=55)
 
-
-        self.image_i_left = PhotoImage(file=self.get_path("item_left.png"))
-        self.image_i_right = PhotoImage(file=self.get_path("item_right.png"))
-        self.image_done = PhotoImage(file=self.get_path("done.png"))
-        self.image_return = PhotoImage(file=self.get_path("return.png"))
-
+        # Adding the data with scroll view.
         self.scroll_frame = Frame(self.frame, height=self.parent.winfo_height() - self.TOP_GAP,
                                   width=self.parent.winfo_width() - 50, bg="#262626")
         self.scroll_frame.pack(expand=True, fill="both", pady=(self.TOP_GAP, 0))
@@ -798,19 +843,30 @@ class Register:
             send_email_thread(subject, body, key)
 
 class History:
+    """
+    The History class manages the borrowing history of the user, displaying past borrowed books and allowing
+    users to borrow the same book again if certain conditions are met.
+    """
     ASSETS_PATH = "assets/history/"
     TOP_GAP = 100
 
     def __init__(self, parent):
         self.parent = parent
         self.frame = Frame(parent, height=1000, width=600, bg="#262626")
+
+        # Page name
         Label(self.frame, text="Borrowing History", font=("Roboto", 20, 'bold'), background='#262626',
               fg='white').place(x=5, y=8)
-        self.borrow_history = library.borrow_hist(App.USER_ID)
 
+        # Loading Images
         self.image_left = PhotoImage(file=self.get_path("left_edge.png"))
         self.image_right = PhotoImage(file=self.get_path("right_edge.png"))
+        self.image_i_left = PhotoImage(file=self.get_path("item_left.png"))
+        self.image_i_right = PhotoImage(file=self.get_path("item_right.png"))
+        self.image_borrow = PhotoImage(file=self.get_path("borrow.png"))
+        self.image_undone = PhotoImage(file=self.get_path("undone.png"))
 
+        # Setting up the headings
         self.head_canvas = Canvas(master=self.frame, bg="#262626", bd=0, highlightthickness=0)
         self.head_canvas.create_image(12, 22, image=self.image_left)
         self.right_id = self.head_canvas.create_image(0, 0, image=self.image_right)
@@ -826,14 +882,11 @@ class History:
         Label(master=self.frame, text="Status", font=("Roboto", 20, 'bold'), background="#F37577",
               foreground='white').place(anchor='ne', relx=0.96, y=55)
 
-        self.image_i_left = PhotoImage(file=self.get_path("item_left.png"))
-        self.image_i_right = PhotoImage(file=self.get_path("item_right.png"))
-        self.image_borrow = PhotoImage(file=self.get_path("borrow.png"))
-        self.image_undone = PhotoImage(file=self.get_path("undone.png"))
-
+        # Adding the history data with scroll view.
         self.scroll_frame = Frame(self.frame, height=self.parent.winfo_height() - self.TOP_GAP,
                                   width=self.parent.winfo_width() - 50, bg="#262626")
         self.scroll_frame.pack(expand=True, fill="both", pady=(self.TOP_GAP, 0))
+        self.borrow_history = library.borrow_hist(App.USER_ID)
         self.list_frame = ListFrame(self.scroll_frame, self.borrow_history, 60, self.create_item)
 
     def add_frame(self):
@@ -898,20 +951,27 @@ class History:
             show_notification(self.frame, "You have borrowed the book successfully.", fg='white')
 
 class Bot:
+    """
+    The Bot class serves as a library assistant interface, allowing users to interact with the system
+    by querying about available books, recommendations, and other related library information.
+    It features a chat-like UI with a scrolling canvas for displaying conversation history and
+    handles user input for queries through a text entry widget.
+    """
     ASSETS_PATH = "assets/bot/"
     def __init__(self, parent):
         self.parent = parent
         self.frame = Frame(parent, height=1000, width=600, bg="#262626")
 
+        # Loading Images
         self.image_right = PhotoImage(file=self.get_path('right.png'))
         self.image_left = PhotoImage(file=self.get_path('left.png'))
         self.image_button = PhotoImage(file=self.get_path('button.png'))
-
         self.image_lt = PhotoImage(file=self.get_path('tl.png'))
         self.image_lb = PhotoImage(file=self.get_path('bl.png'))
         self.image_rt = PhotoImage(file=self.get_path('tr.png'))
         self.image_rb = PhotoImage(file=self.get_path('br.png'))
 
+        # Search frame
         self.search_frame = Frame(self.frame, bg="#262626", width=850, height=55)
         Label(self.search_frame, image=self.image_left, bg="#262626", borderwidth=0).place(x=0, y=0)
         self.entry = Entry(self.search_frame, bd=0, highlightthickness=0, bg="#393939", font=("Roboto", 12), fg='white', insertbackground="white")
@@ -921,6 +981,7 @@ class Bot:
         Button(self.search_frame, image=self.image_button, bg="#393939", borderwidth=0, activebackground="#393939", command=lambda: threading.Thread(target=self.on_click, args=("", )).start()).place(anchor='ne', relx=0.985, y=4, height=46, width=45)
         self.search_frame.pack(side='bottom', pady=(0, 5))
 
+        # Scrollable Chat Frame.
         self.chat_frame = Frame(self.frame, bg='#262626', width=850)
         self.chat_frame.pack(side='bottom', fill='y', expand=True, pady=(10, 3))
         self.chat_frame.pack_propagate(False)
@@ -932,12 +993,15 @@ class Bot:
         self.canvas.bind_all("<MouseWheel>", self.on_mousewheel)
         self.scroll_frame.bind("<Configure>", self.update_scroll_region )
 
+        # Initialising the AI with data.
         ai_data = f"Library Columns: {[library.l_header[:7] + ['is_book_available']]}, Data: {[row[:7] + [True if row[7] else False] for row in library.books]}"
         data = prompt + ai_data
         threading.Thread(target=get_gemini_response, args=(data, )).start()
+
+        # Welcome Message
         self.chat_widget(["Welcome to the Library Assistant!\nI'm here to help you with anything related to the library. You can ask me about available books, know which suits you, or get recommendations.\nHow can I assist you today?", 'response'], self.scroll_frame)
 
-    def update_scroll_region(self, event=None):
+    def update_scroll_region(self, _=None):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
         content_height = self.canvas.bbox("all")[3]
@@ -1005,13 +1069,16 @@ class Bot:
     def remove_frame(self):
         self.frame.pack_forget()
 
-    def update_frame(self):
-        pass
-
     def get_path(self, path: str):
         return self.ASSETS_PATH + path
 
 class App(Tk):
+    """
+       The App class represents the main application window for the BookNest library system.
+       It initializes the user interface, manages different frames for various functionalities
+       (such as home, statistics, book addition, user registration, history, and a bot),
+       and handles user interactions with buttons and navigation between different sections.
+    """
     ASSETS_PATH = "assets/frame3/"
     WIDTH = 1000
     HEIGHT = 650
@@ -1040,8 +1107,8 @@ class App(Tk):
                               "REGISTER": self.register_frame.add_frame, "HISTORY": self.history_frame.add_frame, "BOT": self.bot_frame.add_frame}
         self.remove_frames = {"HOME": self.home_frame.remove_frame, "ADD": self.add_book_frame.remove_frame, "STATISTICS": self.stat_frame.remove_frame,
                               "REGISTER": self.register_frame.remove_frame, "HISTORY": self.history_frame.remove_frame, "BOT": self.bot_frame.remove_frame}
-        self.update_frames = {"HOME": self.home_frame.update_frame, "ADD": self.add_book_frame.update_frame, "STATISTICS": self.stat_frame.update_frame,
-                              "REGISTER": self.register_frame.update_frame, "HISTORY": self.history_frame.update_frame, "BOT": self.bot_frame.update_frame}
+        self.update_frames = {"HOME": self.home_frame.update_frame, "ADD": self.add_book_frame.update_frame, "STATISTICS": lambda: None,
+                              "REGISTER": self.register_frame.update_frame, "HISTORY": self.history_frame.update_frame, "BOT": lambda: None}
 
         # Configuring Window
         self.geometry(f"{self.WIDTH}x{self.HEIGHT}+{int(self.winfo_screenwidth() / 2 - self.WIDTH / 2)}+{int(self.winfo_screenheight() / 2 - self.HEIGHT / 2)}")
