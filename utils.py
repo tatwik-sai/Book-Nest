@@ -6,13 +6,13 @@ from email.mime.text import MIMEText
 import google.generativeai as genai
 from database import Library
 
-key = "AIzaSyDCT9vYHyCZiHewbGMDHCzta1rbq9Sdr4U"
+API_KEY = "AIzaSyDCT9vYHyCZiHewbGMDHCzta1rbq9Sdr4U"
 email_pattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
 prompt = f"""
 I'm working on a Library management system and Integrating you in to the user side to let him clarify his doubts about different books.
 So, I'm expecting you to reply to messages that are relevant. And for others just reply with "I'm here to assist you with library related queries! You can ask me about book availability, suggestions, or library services. How can I help you with that?"
 Do not use any bold text or styles in replies just reply in normal words.
-You can respond to greetings and some common things if it's completely out of topic the reply similar to above not exactly. above.
+You can respond to greetings and some common things if it's completely out of topic the reply similar to above not exactly as above.
 
 Here is some data about our specifications and library:
 A user can not have the book if he already have borrowed the same book and haven't returned yet.
@@ -23,11 +23,16 @@ The due time after borrowing is {Library.DUE_PERIOD} and fine for each excess da
 """
 
 
-genai.configure(api_key=key)
+genai.configure(api_key=API_KEY)
 model = genai.GenerativeModel("gemini-pro")
 chat = model.start_chat(history=[])
 
-def is_strong_pass(password):
+def is_strong_pass(password: str) -> bool:
+    """
+    Checks if the password is strong.
+    :param password: The password.
+    :return: True if strong password else False.
+    """
     if len(password) < 8:
         return False
 
@@ -45,7 +50,7 @@ def is_strong_pass(password):
 
     return True
 
-def send_email(subject, body, to_email):
+def send_email(subject: str, body: str, to_email: str) -> None:
     from_email = "neuronbytes01@gmail.com"
     from_password = "qsre hstj xzfr nlbg"
 
@@ -68,10 +73,14 @@ def send_email(subject, body, to_email):
     except Exception as e:
         print(f"Failed to send email: {e}")
 
-def send_email_thread(subject, body, to_email):
+def send_email_thread(subject: str, body: str, to_email: str) -> None:
     threading.Thread(target=send_email, args=(subject, body, to_email)).start()
 
-def pie_values(data):
+def pie_values(data) -> tuple:
+    """
+    Returns the data for the pie chart.
+    :param data: Registry Data.
+    """
     maintenance= 0
     available = 0
     borrowed = 0
@@ -81,7 +90,12 @@ def pie_values(data):
         available += int(row[7])
     return available, borrowed, maintenance
 
-def bar_values(data, categories):
+def bar_values(data: dict, categories: list) -> list:
+    """
+    Returns the data for the bar graph.
+    :param data: Dictionary of library books.
+    :param categories: The different Genres.
+    """
     diff_cat = {key: 0 for key in categories}
     for row in data:
         try:
@@ -90,7 +104,12 @@ def bar_values(data, categories):
             pass
     return list(diff_cat.values())
 
-def line_chart_values(data, dates):
+def line_chart_values(data: list, dates: list):
+    """
+    Returns the data for line chart.
+    :param data: Registry data.
+    :param dates: List of dates.
+    """
     data_dict = {date.strftime('%d-%m-%Y'): 0 for date in dates}
     for row in data[::-1]:
         try:
@@ -99,14 +118,20 @@ def line_chart_values(data, dates):
             break
     return data_dict.values()
 
-def sort_lib(key, books, striped_books):
+def sort_lib(key: str, books: list, striped_books: list):
+    """
+    Searches for the books, author based on key and returns the sorted list.
+    """
     sorted_lib = []
     for index, book in enumerate(striped_books):
         if key in book[0] or key in book[1]:
             sorted_lib.append(books[index])
     return sorted_lib
 
-def get_gemini_response(question):
+def get_gemini_response(question: str) -> str:
+    """
+    Returns the response to the given question from gemini.
+    """
     response = chat.send_message(question)
     return response.text
 
