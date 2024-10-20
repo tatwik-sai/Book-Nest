@@ -1,7 +1,7 @@
 # Book-Nest
-#### A simple user-friendly Library Management System.
----
-##### Downloading and Executing the Project
+### A simple user-friendly Library Management System.
+
+#### Downloading and Executing the Project
 Download the project from Git Hub or clone it using the following command.
 
 ```
