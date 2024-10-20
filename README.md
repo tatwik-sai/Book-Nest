@@ -17,7 +17,7 @@ pip install -r requirements.txt
 - You can also run the BookNest.exe file by downloading it from here.
 - Make sure the exe is in the same folder as the db folder while executing it.
 
-[Download BookNest](https://drive.google.com/file/d/1_5FJKrN78oPBDRClNbnL7fEIZTw4rkA1/view?usp=sharing)
+[Download BookNest](https://drive.google.com/file/d/1aF_wpQbF5dj7BLsoSJy9keGpfenpSU2t/view?usp=sharing)
 
 > Disable the antivirus and try again if the exe won't run.
 **Note:** To access the admin panel use one of the credentials in the admin.csv file.  
