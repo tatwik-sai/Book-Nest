@@ -53,5 +53,3 @@ pip install -r requirements.txt
         - **Home** - Shows the details of different books in the library you can search for the books and borrow them.
         - **My Books** - Shows the books that you have borrowed and you can see whether you returned them or re-borrow them.
         - **Virtual Assitant** - An AI assistant that can help you with your queries related to the library.
-
----
