@@ -1,2 +1,3 @@
 google-generativeai
-matplotlib
+matplotlib~=3.9.2
+protobuf~=5.28.2
