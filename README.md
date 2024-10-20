@@ -32,6 +32,7 @@ pip install -r requirements.txt
 ---
 ![Bot Page](https://i.ibb.co/QfDSQKm/Screenshot-2024-10-20-083521.png)
 ---
+> **Note:** To access the admin panel use one of the credentials in the admin.csv file.
 
 #### Application Features
 - It will start with a window that asks you to choose your role.
