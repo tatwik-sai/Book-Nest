@@ -125,6 +125,8 @@ class UserAdminManager:
 
     def is_admin(self, email, password):
         for row in self.admins:
+            if row == []:
+                continue
             if row[0] == email and row[1] == password:
                 return True
         return False
