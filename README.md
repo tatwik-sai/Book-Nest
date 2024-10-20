@@ -20,6 +20,13 @@ pip install -r requirements.txt
 [Download BookNest](https://drive.google.com/file/d/1_5FJKrN78oPBDRClNbnL7fEIZTw4rkA1/view?usp=sharing)
 
 > Disable the antivirus and try again if the exe won't run.
+**Note:** To access the admin panel use one of the credentials in the admin.csv file.  
+
+_**Example**_:  
+
+Email: derik@gmail.com  
+
+Password: qwertyuiop
 
 ---
 #### Team Members
