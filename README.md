@@ -15,7 +15,7 @@ pip install -r requirements.txt
 ```
 
 - You can also run the BookNest.exe file by downloading it from here.
-- Make sure the exe is in the same folder as the db folder while executing it.
+- Make sure the exe is in the same folder as the db folder is in while executing it.
 
 [Download BookNest](https://drive.google.com/file/d/1aF_wpQbF5dj7BLsoSJy9keGpfenpSU2t/view?usp=sharing)
 
