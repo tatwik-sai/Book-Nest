@@ -15,9 +15,9 @@ pip install -r requirements.txt
 ```
 
 - or you can simply run the BookNest.exe file.
+> Disable the antivirus and try again if the exe won't run.
 
 ---
-
 #### Team Members
 - M Tatwik Sai
 - Abhyudaya Singh
@@ -33,7 +33,6 @@ pip install -r requirements.txt
 ![Bot Page](https://i.ibb.co/QfDSQKm/Screenshot-2024-10-20-083521.png)
 ---
 > **Note:** To access the admin panel use one of the credentials in the admin.csv file.
-
 #### Application Features
 - It will start with a window that asks you to choose your role.
     - **Admin** - Controls the Library
