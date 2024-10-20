@@ -18,7 +18,7 @@ pip install -r requirements.txt
 
 ---
 
-##### Team Members
+#### Team Members
 - M Tatwik Sai
 - Abhyudaya Singh
 - Abdul Rehman Farooqui
@@ -33,7 +33,7 @@ pip install -r requirements.txt
 ![Bot Page](https://i.ibb.co/QfDSQKm/Screenshot-2024-10-20-083521.png)
 ---
 
-##### Application Features
+#### Application Features
 - It will start with a window that asks you to choose your role.
     - **Admin** - Controls the Library
     - **User** - Can view the library and borrow books
