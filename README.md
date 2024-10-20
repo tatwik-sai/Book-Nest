@@ -14,7 +14,11 @@ git clone https://github.com/tatwik-sai/Book-Nest.git
 pip install -r requirements.txt
 ```
 
-- or you can simply run the BookNest.exe file.
+- You can also run the BookNest.exe file by downloading it from here.
+- Make sure the exe is in the same folder as the db folder while executing it.
+
+[Download BookNest](https://drive.google.com/file/d/1_5FJKrN78oPBDRClNbnL7fEIZTw4rkA1/view?usp=sharing)
+
 > Disable the antivirus and try again if the exe won't run.
 
 ---
