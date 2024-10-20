@@ -1,8 +1,8 @@
 # Book-Nest
 #### A simple user-friendly Library Management System.
-
+---
 ##### Downloading and Executing the Project
-Download the project from github or clone it using the following command.
+Download the project from Git Hub or clone it using the following command.
 
 ```
 git clone https://github.com/tatwik-sai/Book-Nest.git
@@ -16,13 +16,41 @@ pip install -r requirements.txt
 
 - or you can simply run the BookNest.exe file.
 
+---
 
 ##### Team Members
-| Name            | Roll Number |
-| --------------- | ----------- |
-| M Tatwik Sai    | BT2024200   |
-| Abhyudaya Singh | BT2024180   |
-| Abdul Rehman Farooqui | BT2024206 |
-| Ridwan Umar | BT2024217 |
+- M Tatwik Sai
+- Abhyudaya Singh
+- Abdul Rehman Farooqui
+- Ridwan Umar
 
-[Github Repository](https://github.com/tatwik-sai/Book-Nest)
+---
+
+![Home Page](https://i.ibb.co/7g9q8sr/Screenshot-2024-10-20-083535.png)
+---
+![Statistics Page](https://i.ibb.co/k6qgt0p/Screenshot-2024-10-20-083619.png)
+---
+![Bot Page](https://i.ibb.co/QfDSQKm/Screenshot-2024-10-20-083521.png)
+---
+
+##### Application Features
+- It will start with a window that asks you to choose your role.
+    - **Admin** - Controls the Library
+    - **User** - Can view the library and borrow books
+
+- Once you choose your role, you will be taken to the Sign In page.
+    - **Admin** - You can sign in using the default credentials.
+    - **User** - Can sign in or sign up.
+
+- Once you sign in, you will be taken to the main page with different tabs for admin and user.
+    - **Admin**
+        - **Home** - This shows the details of different books in the library. You can search for books and either add them to maintenance or delete them.
+        - **Register** - Keeps a record of all the borrowings in the library and you can approve returns from here.
+        - **Statistics** - Shows the statistics of the library.
+        - **Add Book** - Add a new book to the library.
+    - **User**
+        - **Home** - Shows the details of different books in the library you can search for the books and borrow them.
+        - **My Books** - Shows the books that you have borrowed and you can see whether you returned them or re-borrow them.
+        - **Virtual Assitant** - An AI assistant that can help you with your queries related to the library.
+
+---
